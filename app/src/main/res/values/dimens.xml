@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="my_value">16dp</dimen>
+    <dimen name="question_bar_height">50dp</dimen>
+    <dimen name="option_margin_top">30dp</dimen>
+    <dimen name="option_margin_left">30dp</dimen>
 </resources>
