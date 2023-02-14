@@ -7,4 +7,5 @@
     <dimen name="option_boarder_padding">15dp</dimen>
     <dimen name="question_boarder_padding">20dp</dimen>
     <dimen name="option_boarder_height">1dp</dimen>
+    <dimen name="question_bar_text_size">15sp</dimen>
 </resources>

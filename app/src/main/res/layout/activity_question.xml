@@ -18,7 +18,7 @@
                 android:id="@+id/question_bar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/question_bar_height"
-                android:background="@color/black"
+                android:background="@color/blue_primary"
                 android:gravity="center_vertical"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -26,8 +26,11 @@
                 >
 
                 <TextView
+                    android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/question_bar_text_size"
                     android:text="@string/q_1_single_choice_question"
                     android:textColor="@color/white" />
             </com.google.android.material.appbar.AppBarLayout>
