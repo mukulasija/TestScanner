@@ -19,65 +19,121 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/question_bar_height"
                 android:background="@color/black"
+                android:gravity="center_vertical"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 >
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Q.1 Single Choice question"
-                    android:textColor="@color/white"></TextView>
+                    android:text="@string/q_1_single_choice_question"
+                    android:textColor="@color/white" />
             </com.google.android.material.appbar.AppBarLayout>
 
-            <TextView
+
+
+            <ImageView
                 android:id="@+id/tv_question"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/question_bar"
                 app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="20dp"
-                android:text="which among the following is a good example of sp2 reaction give me some examples"></TextView>
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_margin="10dp"
+                android:src="@drawable/question9" />
+
+            <View
+                android:id="@+id/boarder_tv_question"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/option_boarder_height"
+                android:background="@color/option_boarder"
+                android:layout_marginTop="@dimen/question_boarder_padding"
+                app:layout_constraintTop_toBottomOf="@id/tv_question"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
             <ImageView
                 android:id="@+id/option_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_foreground"
-                app:layout_constraintTop_toBottomOf="@id/tv_question"
+                android:src="@drawable/opt1"
+                app:layout_constraintTop_toBottomOf="@id/boarder_tv_question"
                 app:layout_constraintLeft_toLeftOf="@id/tv_question"
-                android:layout_marginTop="@dimen/option_margin_top"
-                android:layout_marginLeft="@dimen/option_margin_left"></ImageView>
-            <ImageView
-                android:id="@+id/option_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/option_boarder_padding"
+                />
+
+            <View
+                android:id="@+id/boarder_option_1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/option_boarder_height"
+                android:background="@color/option_boarder"
+                android:layout_marginTop="@dimen/option_boarder_padding"
                 app:layout_constraintTop_toBottomOf="@id/option_1"
-                app:layout_constraintLeft_toLeftOf="@id/option_1"
-                app:layout_constraintRight_toRightOf="@id/option_1"
-                android:src="@drawable/ic_launcher_foreground"
-                android:layout_marginTop="@dimen/option_margin_top"></ImageView>
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
             <ImageView
                 android:id="@+id/option_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_foreground"
-                app:layout_constraintLeft_toRightOf="@id/option_1"
-                app:layout_constraintBottom_toBottomOf="@id/option_1"
-                app:layout_constraintTop_toTopOf="@id/option_1"
-                app:layout_constraintRight_toRightOf="@id/tv_question"></ImageView>
+                android:src="@drawable/opt2"
+                app:layout_constraintTop_toBottomOf="@id/boarder_option_1"
+                app:layout_constraintLeft_toLeftOf="@id/option_1"
+                android:layout_marginTop="@dimen/option_boarder_padding" />
+
+            <View
+                android:id="@+id/boarder_option_2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/option_boarder_height"
+                android:background="@color/option_boarder"
+                android:layout_marginTop="@dimen/option_boarder_padding"
+                app:layout_constraintTop_toBottomOf="@id/option_2"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+            <ImageView
+                android:id="@+id/option_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/boarder_option_2"
+                app:layout_constraintLeft_toLeftOf="@id/option_2"
+                android:src="@drawable/opt3"
+                android:layout_marginTop="@dimen/option_boarder_padding" />
+            <View
+                android:id="@+id/boarder_option_3"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/option_boarder_height"
+                android:background="@color/option_boarder"
+                android:layout_marginTop="@dimen/option_boarder_padding"
+                app:layout_constraintTop_toBottomOf="@id/option_3"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+
             <ImageView
                 android:id="@+id/option_4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_foreground"
-                app:layout_constraintTop_toBottomOf="@id/option_2"
-                app:layout_constraintLeft_toLeftOf="@id/option_2"
-                app:layout_constraintRight_toRightOf="@id/option_2"
-                android:layout_marginTop="@dimen/option_margin_top"></ImageView>
+                android:src="@drawable/opt4"
+                app:layout_constraintTop_toBottomOf="@id/boarder_option_3"
+                app:layout_constraintLeft_toLeftOf="@id/option_3"
+                android:layout_marginTop="@dimen/option_boarder_padding" />
+
+            <View
+                android:id="@+id/boarder_option_4"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/option_boarder_height"
+                android:background="@color/option_boarder"
+                android:layout_marginTop="@dimen/option_boarder_padding"
+                app:layout_constraintTop_toBottomOf="@id/option_4"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

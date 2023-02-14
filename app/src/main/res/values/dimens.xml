@@ -4,4 +4,7 @@
     <dimen name="question_bar_height">50dp</dimen>
     <dimen name="option_margin_top">30dp</dimen>
     <dimen name="option_margin_left">30dp</dimen>
+    <dimen name="option_boarder_padding">15dp</dimen>
+    <dimen name="question_boarder_padding">20dp</dimen>
+    <dimen name="option_boarder_height">1dp</dimen>
 </resources>
