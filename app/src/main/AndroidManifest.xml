@@ -10,21 +10,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TestScanner">
         <activity
-            android:name=".HomeScreen"
+            android:name=".ui.HomeScreen"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".question"
+            android:name=".ui.question"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
