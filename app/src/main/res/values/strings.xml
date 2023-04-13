@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">TestScanner</string>
+    <string name="login_text">Login</string>
+    <string name="edit_text_username">username</string>
+    <string name="edit_text_password">password</string>
+    <string name="button_sign_in">Login</string>
+    <string name="button_sign_up">Sign up</string>
+    <string name="sign_up">Sign up</string>
+    <string name="enter_username">enter username</string>
+    <string name="enter_password">enter password</string>
+    <string name="edit_text_password_confirm">confirm password</string>
+    <string name="button_sign_up_activity">sign up</string>
+    <string name="email_address">email address</string>
+    <string name="password_login">Password</string>
+    <string name="email_address_login">Email</string>
+    <string name="username">Username</string>
+    <string name="password_signup">Password</string>
+    <string name="confirm_password_signup">Confirm Password</string>
+    <string name="or_login">OR</string>
+    <string name="login_with_google">Login with Google</string>
+    <string name="logo">logo</string>
 </resources>
