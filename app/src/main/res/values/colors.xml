@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="blue_primary">#37A4FB</color>
     <color name="option_boarder">#D6D6D6</color>
+    <color name="backgroundcolor">#ffffff</color>
 </resources>

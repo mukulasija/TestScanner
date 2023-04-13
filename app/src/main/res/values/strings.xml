@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">TestScanner</string>
     <string name="q_1_single_choice_question">Q.1 Single Choice</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
