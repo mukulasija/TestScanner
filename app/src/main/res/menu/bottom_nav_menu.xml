@@ -5,16 +5,16 @@
         android:icon="@drawable/ic_round_home_24"
         android:title="home" />
 
-<!--    <item-->
-<!--        android:id="@+id/secondFragment"-->
-<!--        android:icon="@drawable/ic_round_query_stats_24"-->
-<!--        android:visible="false"-->
-<!--        android:title="report"/>-->
+    <item
+        android:id="@+id/secondFragment"
+        android:icon="@drawable/result_image"
+        android:title="Result" />
 
-<!--    <item-->
-<!--        android:id="@+id/thirdFragment"-->
-<!--        android:icon="@drawable/ic_round_business_24"-->
-<!--        android:title="profile" />-->
+    <item
+        android:id="@+id/thirdFragment"
+        android:icon="@drawable/analytics_image"
+        android:title="Analytics" />
+
     <item
         android:id="@+id/fourFragment"
         android:icon="@drawable/ic_round_settings_24"
