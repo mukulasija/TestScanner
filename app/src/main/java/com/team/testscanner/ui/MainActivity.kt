@@ -15,6 +15,10 @@ import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.team.testscanner.R
+import com.team.testscanner.ui.fragments.AnalyticsFragment
+import com.team.testscanner.ui.fragments.CreateTestIntro
+import com.team.testscanner.ui.fragments.HomeFragment
+import com.team.testscanner.ui.fragments.ResultsFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -26,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
       //  navView = findViewById(R.id.bottomNavigationView)
-        val homeFragment = MyHomeFragment()
+        val homeFragment = HomeFragment()
         val homeTransaction = supportFragmentManager.beginTransaction()
         homeTransaction.replace(R.id.my_fragment, homeFragment)
         homeTransaction.commit()
@@ -40,17 +44,17 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.firstFragment -> {
                     // Switch to the Home fragment
-                    switchFragment(MyHomeFragment())
+                    switchFragment(HomeFragment())
                     true
                 }
                 R.id.secondFragment -> {
                     // Switch to the Profile fragment
-                    switchFragment(MyResultsFragment())
+                    switchFragment(ResultsFragment())
                     true
                 }
                 R.id.thirdFragment -> {
                     // Switch to the Settings fragment
-                    switchFragment(MyAnalyticsFragment())
+                    switchFragment(AnalyticsFragment())
                     true
                 }
                 else -> false
@@ -59,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
         fabButton.setOnClickListener {
             // Create a new instance of the fragment
-            val fragment = MyFragment()
+            val fragment = CreateTestIntro()
             val transaction = supportFragmentManager.beginTransaction()
             transaction.replace(R.id.my_fragment, fragment)
             transaction.addToBackStack(null)
@@ -82,37 +86,7 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 }
-class MyFragment : Fragment(R.layout.fragment_create_test_intro) {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-    }
-}
-
-class MyResultsFragment : Fragment(R.layout.fragment_results) {
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-    }
-}
-
-class MyAnalyticsFragment : Fragment(R.layout.fragment_analytics) {
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-    }
-}
-
-class MyHomeFragment : Fragment(R.layout.fragment_home) {
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-    }
-}
 
 //class MyHomeFragment : Fragment(R.layout.fragment_home) {
 //
