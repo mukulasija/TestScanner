@@ -7,8 +7,8 @@
     tools:context=".ui.activities.TestScreen">
     <ImageView
         android:id="@+id/question_Image"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
         android:src="@drawable/ic_launcher_background"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
