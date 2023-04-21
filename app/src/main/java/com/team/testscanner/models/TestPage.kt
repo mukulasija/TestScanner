@@ -1,4 +1,4 @@
-package com.team.testscanner.db
+package com.team.testscanner.models
 
 import android.graphics.Bitmap
 import android.graphics.PointF

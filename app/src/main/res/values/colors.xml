@@ -10,4 +10,13 @@
     <color name="blue_primary">#37A4FB</color>
     <color name="option_boarder">#D6D6D6</color>
     <color name="backgroundcolor">#ffffff</color>
+    <color name="colorPrimary">#18206F</color>
+    <color name="colorPrimaryDark">#11164E</color>
+    <color name="colorAccent">#E91E63</color>
+    <color name="colorPrimaryText">#18206F</color>
+    <color name="colorPrimaryTextOpaque">#18206F</color>
+    <color name="colorPrimaryButton">#FFFFFF</color>
+    <color name="colorEditTextBgColor">#f2f5fa</color>
+    <color name="colorEditTextBorderColor">#E9EBEF</color>
+    <color name="colorPrimaryButtonBg">#18206F</color>
 </resources>
