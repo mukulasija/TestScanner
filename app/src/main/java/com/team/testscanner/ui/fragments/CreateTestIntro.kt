@@ -17,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -71,6 +72,17 @@ class CreateTestIntro : Fragment() {
         galleryButton.setOnClickListener {
             Log.i("TAG", "CLICKING ON THE BUTTON")
             openGallery()
+        }
+        val textViewTitle=view.findViewById<TextView>(R.id.edit_test_title)
+        val textViewDesc=view.findViewById<TextView>(R.id.edit_test_description)
+        val submitButton:Button=view.findViewById(R.id.button_submit_test_intro)
+        submitButton.setOnClickListener {
+            val fragmentManager = requireActivity().supportFragmentManager
+            val fragment = HomeFragment()
+            fragment.addData(textViewTitle.text.toString(),textViewDesc.text.toString())
+            val transaction = fragmentManager.beginTransaction()
+            transaction.replace(R.id.my_fragment, fragment)
+            transaction.commit()
         }
         return view
     }
