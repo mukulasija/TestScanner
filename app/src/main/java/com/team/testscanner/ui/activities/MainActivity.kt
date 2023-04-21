@@ -1,4 +1,4 @@
-package com.team.testscanner.ui
+package com.team.testscanner.ui.activities
 
 import android.R.attr.button
 import android.os.Bundle
@@ -34,9 +34,7 @@ class MainActivity : AppCompatActivity() {
         val homeTransaction = supportFragmentManager.beginTransaction()
         homeTransaction.replace(R.id.my_fragment, homeFragment)
         homeTransaction.commit()
-
         val fabButton:FloatingActionButton=findViewById(R.id.fab)
-
         val bottomNavigationView:BottomNavigationView = findViewById(R.id.bottomNavigationView)
 
         // Attach a listener to the bottom navigation view
