@@ -1,6 +1,7 @@
-package com.team.testscanner.ui
+package com.team.testscanner.ui.activities
 
 import android.R.attr.button
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -34,9 +35,7 @@ class MainActivity : AppCompatActivity() {
         val homeTransaction = supportFragmentManager.beginTransaction()
         homeTransaction.replace(R.id.my_fragment, homeFragment)
         homeTransaction.commit()
-
         val fabButton:FloatingActionButton=findViewById(R.id.fab)
-
         val bottomNavigationView:BottomNavigationView = findViewById(R.id.bottomNavigationView)
 
         // Attach a listener to the bottom navigation view
@@ -62,6 +61,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         fabButton.setOnClickListener {
+            openActivity()
+            //remove this function call just for testing test page
             // Create a new instance of the fragment
             val fragment = CreateTestIntro()
             val transaction = supportFragmentManager.beginTransaction()
@@ -70,6 +71,11 @@ class MainActivity : AppCompatActivity() {
             transaction.commit()
         }
 
+    }
+
+    private fun openActivity() {
+        val intent = Intent(this,TestScreen::class.java)
+        startActivity(intent)
     }
 
     private fun switchFragment(fragment: Fragment) {
