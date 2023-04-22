@@ -28,7 +28,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.team.testscanner.Manifest
+
 import com.team.testscanner.R
 import com.team.testscanner.ui.ResponseManipulator
 import org.json.JSONArray

@@ -88,9 +88,9 @@ class Login : AppCompatActivity() {
     }
     private fun performGlogin(){
         val signInIntent=googleSignInClient.signInIntent
-        laucher.launch(signInIntent)
+        launcher.launch(signInIntent)
     }
-    private val laucher=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+    private val launcher=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         result ->
                 if(result.resultCode == Activity.RESULT_OK){
                     val task=GoogleSignIn.getSignedInAccountFromIntent(result.data)

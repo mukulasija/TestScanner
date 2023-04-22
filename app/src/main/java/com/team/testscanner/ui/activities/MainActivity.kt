@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -26,6 +27,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomAppBar: BottomAppBar
     private lateinit var auth: FirebaseAuth
     private var isShowBottomNav = true
+
+
+    lateinit var mGoogleSignInClient: GoogleSignInClient
+    // val auth is initialized by lazy
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -56,6 +62,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.fourFragment->{
+                    mGoogleSignInClient.signOut()
                     auth = Firebase.auth
                     Firebase.auth.signOut()
                     val intent = Intent(this, Login::class.java)
@@ -68,11 +75,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         fabButton.setOnClickListener {
-<<<<<<< HEAD
            // openActivity()
-=======
-//            openActivity()
->>>>>>> 4fd3b732dbb9287887e2139587489808f56b0e48
             //remove this function call just for testing test page
             // Create a new instance of the fragment
             val fragment = CreateTestIntro()
