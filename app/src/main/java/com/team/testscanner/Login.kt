@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.team.testscanner.ui.activities.MainActivity
 
 class Login : AppCompatActivity() {
 
@@ -69,6 +70,7 @@ class Login : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     val intent = Intent(this, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
 
                 } else {
@@ -113,11 +115,21 @@ class Login : AppCompatActivity() {
         auth.signInWithCredential(credential).addOnCompleteListener {
             if(it.isSuccessful){
                 val intent = Intent(this, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             }
             else{
                 Toast.makeText(this,it.exception.toString(),Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if(auth.currentUser!=null){
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
         }
     }
 }

@@ -10,6 +10,7 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.team.testscanner.ui.activities.MainActivity
 
 class SignUp : AppCompatActivity() {
 
@@ -50,7 +51,7 @@ class SignUp : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    val intent = Intent(this,MainActivity::class.java)
+                    val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
 
                 } else {

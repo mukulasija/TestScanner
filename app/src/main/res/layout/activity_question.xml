@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.question">
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="#89CAFF"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <RelativeLayout
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <ImageView
+                android:id="@+id/btn_menu"
+                android:layout_alignParentStart="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/ic_baseline_menu_24" />
+            <TextView
+                android:id="@+id/tv_logo"
+                android:layout_toRightOf="@id/btn_menu"
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:textColor="@color/white"
+                android:text="TestScanner" />
+
+
+
+            <TextView
+                android:id="@+id/tv_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:text="01:23:20"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/btn_submit"></TextView>
+            <Button
+                android:id="@+id/btn_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/cylender_shape"
+                android:text="Submit" />
+
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/question_bar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/question_bar_height"
+                android:background="@color/blue_primary"
+                android:gravity="center_vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                >
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/question_bar_text_size"
+                    android:text="@string/q_1_single_choice_question"
+                    android:textColor="@color/white" />
+            </com.google.android.material.appbar.AppBarLayout>
+
+
+
+            <ImageView
+                android:id="@+id/tv_question"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/question_bar"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_margin="10dp"
+                android:src="@drawable/question9" />
+
+            <View
+                android:id="@+id/boarder_tv_question"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/option_boarder_height"
+                android:background="@color/option_boarder"
+                android:layout_marginTop="@dimen/question_boarder_padding"
+                app:layout_constraintTop_toBottomOf="@id/tv_question"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <ImageView
+                android:id="@+id/option_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/opt1"
+                app:layout_constraintTop_toBottomOf="@id/boarder_tv_question"
+                app:layout_constraintLeft_toLeftOf="@id/tv_question"
+                android:layout_marginTop="@dimen/option_boarder_padding"
+                />
+
+            <View
+                android:id="@+id/boarder_option_1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/option_boarder_height"
+                android:background="@color/option_boarder"
+                android:layout_marginTop="@dimen/option_boarder_padding"
+                app:layout_constraintTop_toBottomOf="@id/option_1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <ImageView
+                android:id="@+id/option_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/opt2"
+                app:layout_constraintTop_toBottomOf="@id/boarder_option_1"
+                app:layout_constraintLeft_toLeftOf="@id/option_1"
+                android:layout_marginTop="@dimen/option_boarder_padding" />
+
+            <View
+                android:id="@+id/boarder_option_2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/option_boarder_height"
+                android:background="@color/option_boarder"
+                android:layout_marginTop="@dimen/option_boarder_padding"
+                app:layout_constraintTop_toBottomOf="@id/option_2"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+            <ImageView
+                android:id="@+id/option_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/boarder_option_2"
+                app:layout_constraintLeft_toLeftOf="@id/option_2"
+                android:src="@drawable/opt3"
+                android:layout_marginTop="@dimen/option_boarder_padding" />
+            <View
+                android:id="@+id/boarder_option_3"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/option_boarder_height"
+                android:background="@color/option_boarder"
+                android:layout_marginTop="@dimen/option_boarder_padding"
+                app:layout_constraintTop_toBottomOf="@id/option_3"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+
+            <ImageView
+                android:id="@+id/option_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/opt4"
+                app:layout_constraintTop_toBottomOf="@id/boarder_option_3"
+                app:layout_constraintLeft_toLeftOf="@id/option_3"
+                android:layout_marginTop="@dimen/option_boarder_padding" />
+
+            <View
+                android:id="@+id/boarder_option_4"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/option_boarder_height"
+                android:background="@color/option_boarder"
+                android:layout_marginTop="@dimen/option_boarder_padding"
+                app:layout_constraintTop_toBottomOf="@id/option_4"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/llout_btm_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@color/option_boarder"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btn_prev_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circle_shape"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="a" />
+
+        <Button
+            android:id="@+id/btn_rvw_ltr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/btn_prev_arrow"
+            app:layout_constraintTop_toTopOf="@id/btn_prev_arrow"
+            app:layout_constraintBottom_toBottomOf="@id/btn_prev_arrow"
+            android:background="@drawable/cylender_shape"
+            android:text="b" />
+
+        <Button
+            android:id="@+id/btn_clr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/btn_rvw_ltr"
+            app:layout_constraintTop_toTopOf="@id/btn_rvw_ltr"
+            app:layout_constraintBottom_toBottomOf="@id/btn_rvw_ltr"
+            android:background="@drawable/cylender_shape"
+            android:text="c" />
+
+        <Button
+            android:id="@+id/btn_sv_nxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/btn_clr"
+            app:layout_constraintTop_toTopOf="@id/btn_clr"
+            app:layout_constraintBottom_toBottomOf="@id/btn_clr"
+            app:layout_constraintRight_toLeftOf="@id/btn_nxt"
+            android:background="@drawable/cylender_shape"
+            android:text="d" />
+
+        <Button
+            android:id="@+id/btn_nxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/llout_btm_bar"
+            app:layout_constraintBottom_toBottomOf="@id/llout_btm_bar"
+            app:layout_constraintRight_toRightOf="parent"
+            android:background="@drawable/circle_shape"
+            android:text="e"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

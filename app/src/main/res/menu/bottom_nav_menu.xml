@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/firstFragment"
+        android:icon="@drawable/ic_round_home_24"
+        android:title="home" />
+
+    <item
+        android:id="@+id/secondFragment"
+        android:icon="@drawable/result_image"
+        android:title="Result" />
+
+    <item
+        android:id="@+id/thirdFragment"
+        android:icon="@drawable/analytics_image"
+        android:title="Analytics" />
+
+    <item
+        android:id="@+id/fourFragment"
+        android:icon="@drawable/ic_round_settings_24"
+        android:title="setting" />
+</menu>

@@ -19,4 +19,12 @@
     <string name="or_login">OR</string>
     <string name="login_with_google">Login with Google</string>
     <string name="logo">logo</string>
+    <string name="q_1_single_choice_question">Q.1 Single Choice</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_home_fragment">Hello Home Fragment</string>
+    <string name="hello_results_fragment">Hello Results Fragment</string>
+    <string name="demo_1">Demo 1</string>
+    <string name="demo_2">Demo 2</string>
+    <string name="demo_desc_1">Demo Desc 1</string>
+    <string name="demo_desc_2">Demo Desc 2</string>
 </resources>

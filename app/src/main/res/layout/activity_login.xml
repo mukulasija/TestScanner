@@ -12,7 +12,7 @@
         android:layout_width="305dp"
         android:layout_height="421dp"
         android:contentDescription="@string/login_text"
-        android:src="@drawable/logo2"
+        android:src="@drawable/logo5"
         app:layout_constraintBottom_toTopOf="@+id/textView_login"
         app:layout_constraintEnd_toEndOf="@id/textView_login"
         app:layout_constraintHorizontal_bias="0.585"

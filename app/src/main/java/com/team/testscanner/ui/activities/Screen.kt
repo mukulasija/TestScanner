@@ -1,11 +1,12 @@
-package com.team.testscanner
+package com.team.testscanner.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.team.testscanner.R
 
-class MainActivity : AppCompatActivity() {
+class question : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_question)
     }
 }

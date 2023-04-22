@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/first_graph"
+    app:startDestination="@id/firstFragment">
+    <fragment
+        android:id="@+id/firstFragment"
+        android:name="com.team.testscanner.view.ui.fragments.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/secondFragment"
+        android:name="com.siddharaj.mymobills.view.ui.fragments.ReportFragment"
+        android:label="Report"
+        tools:layout="@layout/fragment_report" />
+<!--    <fragment-->
+<!--        android:id="@+id/thirdFragment"-->
+<!--        android:name="com.siddharaj.mymobills.view.ui.fragments.ProfileFragment"-->
+<!--        android:label="Profile"-->
+<!--        tools:layout="@layout/fragment_profile" />-->
+<!--    <fragment-->
+<!--        android:id="@+id/fourFragment"-->
+<!--        android:name="com.siddharaj.mymobills.view.ui.fragments.SettingFragment"-->
+<!--        android:label="Setting"-->
+<!--        tools:layout="@layout/fragment_setting" />-->
+    <fragment
+        android:id="@+id/createInvoiceFragment"
+        android:name="com.siddharaj.mymobills.view.ui.fragments.CreateInvoiceFragment"
+        android:label="Create Invoice"
+        tools:layout="@layout/fragment_create_test" />
+</navigation>
