@@ -6,4 +6,6 @@ data class Question(
     var yend : Int,
     var answer: String = "",
     var userAnswer: String = ""
-)
+) {
+    constructor(imageUrl: String) : this(imageUrl,10,20,"","")
+}

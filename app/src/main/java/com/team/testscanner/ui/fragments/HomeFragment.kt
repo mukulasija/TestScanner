@@ -1,16 +1,16 @@
 package com.team.testscanner.ui.fragments
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.team.testscanner.R
+import com.team.testscanner.models.Quiz
 import com.team.testscanner.ui.MyAdapter
-import com.team.testscanner.ui.TestData
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,8 +33,8 @@ class HomeFragment : Fragment() {
 
 
 
-    private var testDataList: ArrayList<TestData> =arrayListOf<TestData>()
-    private var adapter: MyAdapter=MyAdapter(testDataList)
+    private var quizList: ArrayList<Quiz> =arrayListOf<Quiz>()
+    private var adapter: MyAdapter=MyAdapter(quizList)
 //    lateinit var textTitle:Array<String>
 //    lateinit var textDesc:Array<String>
 //    lateinit var testData:Array<String>
@@ -50,7 +50,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dataInitilizate()
+//        dataInitilizate()
         val layoutManager=LinearLayoutManager(context)
         var recyclerView: RecyclerView = view.findViewById(R.id.home_recyclerView)
         recyclerView.layoutManager=layoutManager
@@ -76,14 +76,14 @@ class HomeFragment : Fragment() {
 //            g getString(R.string.demo_1),
 //            getString(R.string.demo_desc_2)
 //        )
-
-        val test=TestData( getString(R.string.demo_1), getString(R.string.demo_1))
-        testDataList.add(test)
+        val quiz = Quiz("1","title")
+//        val test=TestData( getString(R.string.demo_1), getString(R.string.demo_1))
+        quizList.add(quiz)
 
     }
      fun addData(string1:String,string2:String){
-         val test=TestData( string1, string2)
-         testDataList.add(test)
+//         val test=TestData( string1, string2)
+//         quizList.add(test)
          adapter.notifyDataSetChanged()
      }
 
