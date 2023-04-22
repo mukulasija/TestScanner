@@ -7,5 +7,5 @@ data class Question(
     var answer: String = "",
     var userAnswer: String = ""
 ) {
-    constructor(imageUrl: String) : this(imageUrl,10,20,"","")
+    constructor(imageUrl: String) : this(imageUrl,10,20,"option1","")
 }

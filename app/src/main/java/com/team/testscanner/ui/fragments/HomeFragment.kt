@@ -1,11 +1,14 @@
 package com.team.testscanner.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.team.testscanner.R
@@ -30,11 +33,9 @@ class HomeFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-
-
-
-    private var quizList: ArrayList<Quiz> =arrayListOf<Quiz>()
-    private var adapter: MyAdapter=MyAdapter(quizList)
+//    private var quizList: ArrayList<Quiz> =arrayListOf<Quiz>()
+    private var quizList = mutableListOf<Quiz>()
+    private lateinit var adapter: MyAdapter
 //    lateinit var textTitle:Array<String>
 //    lateinit var textDesc:Array<String>
 //    lateinit var testData:Array<String>
@@ -50,13 +51,18 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        dataInitilizate()
+        dataInitilizate()    //dummy data  //to remove it after
+        adapter = MyAdapter(requireContext(),quizList)
+        setUpRecyclerView(view)
+    }
+
+    private fun setUpRecyclerView(view : View){
         val layoutManager=LinearLayoutManager(context)
-        var recyclerView: RecyclerView = view.findViewById(R.id.home_recyclerView)
+        val recyclerView: RecyclerView = view.findViewById(R.id.home_recyclerView)
         recyclerView.layoutManager=layoutManager
         recyclerView.adapter=adapter
-
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -81,6 +87,23 @@ class HomeFragment : Fragment() {
         quizList.add(quiz)
 
     }
+
+    //// firestore initialization
+//    private fun setUpFireStore() {
+//        firestore = FirebaseFirestore.getInstance()
+//        val collectionReference = firestore.collection("quizzes")
+//        collectionReference.addSnapshotListener { value, error ->
+//            if(value == null || error != null){
+//                Toast.makeText(this, "Error fetching data", Toast.LENGTH_SHORT).show()
+//                return@addSnapshotListener
+//            }
+//            Log.d("DATA", value.toObjects(Quiz::class.java).toString())
+//            quizList.clear()
+//            quizList.addAll(value.toObjects(Quiz::class.java))
+//            adapter.notifyDataSetChanged()
+//        }
+//    }
+
      fun addData(string1:String,string2:String){
 //         val test=TestData( string1, string2)
 //         quizList.add(test)
