@@ -28,18 +28,16 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.team.testscanner.Manifest
 import com.team.testscanner.R
 import com.team.testscanner.ui.ResponseManipulator
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.ByteArrayOutputStream
+import java.io.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-private lateinit var response : JSONObject
 
 /**
  * A simple [Fragment] subclass.
@@ -47,6 +45,7 @@ private lateinit var response : JSONObject
  * create an instance of this fragment.
  */
 class CreateTestIntro : Fragment() {
+    private lateinit var response : JSONObject
     private val PICK_IMAGES = "image/*"
     private lateinit var galleryButton: Button
     private var imageUris: MutableList<Uri> = mutableListOf()
@@ -201,7 +200,9 @@ class CreateTestIntro : Fragment() {
         val jsonObjectRequest = object : JsonObjectRequest(Method.POST, url, jsonRequest,
             Response.Listener { response ->
                 // Handle the response here
-                Log.d("visionApi",response.toString())
+                this.response = response
+
+                Log.d("visionApi",response.getString("textAnnotations"))
 //                ResponseManipulator(requireContext(),response).getFirstLetter()
             },
             Response.ErrorListener { error ->
@@ -217,8 +218,44 @@ class CreateTestIntro : Fragment() {
                 return headers
             }
         }
+        queue.add(jsonObjectRequest)
+//        sendData(response.toString())
+//        writeStringToFile(requireContext(), response.toString())
+//        File("output.txt").writeText(response.toString())
         return response
 
+    }
+
+    private fun sendData(response : JSONObject) {
+
+    }
+
+    //    private fun writeStringToFile(context: Context, response: String) {
+//        try {
+//            val file = File(context.filesDir, "filename.txt")
+//            val writer = FileWriter(file)
+//            writer.write(response)
+//            writer.close()
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        }
+//    }
+    fun writeStringToFile(context: Context, response: String) {
+        try {
+            val file = File(context.filesDir, "filename.txt")
+            val writer = FileWriter(file)
+            writer.write(response)
+            writer.close()
+
+            // Copy the file from internal storage to assets folder
+            val inputStream: InputStream = FileInputStream(file)
+            val outputStream: OutputStream = context.assets.openFd("filename.txt").createOutputStream()
+            inputStream.copyTo(outputStream)
+            inputStream.close()
+            outputStream.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
     }
     private fun getStringResponse(YOUR_IMAGE_CONTENT: String){
         val queue = Volley.newRequestQueue(requireContext())

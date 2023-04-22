@@ -24,6 +24,9 @@
             android:name=".ui.activities.SplashScreen"
             android:exported="false" />
         <activity
+            android:name=".ui.activities.TestScreen"
+            android:exported="false" />
+        <activity
             android:name=".ui.question"
             android:exported="false">
             <meta-data
