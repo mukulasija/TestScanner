@@ -10,11 +10,13 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.gson.Gson
 import com.team.testscanner.R
 import com.team.testscanner.adapters.OptionAdapter
 import com.team.testscanner.models.OptionSelector
@@ -52,14 +54,14 @@ class TestScreen : AppCompatActivity() {
             bindViews()
         }
 
-//        btnSubmit.setOnClickListener {
-//            Log.d("FINALQUIZ", questions.toString())
-//
-//            val intent = Intent(this, ResultActivity::class.java)
-//            val json  = Gson().toJson(quizzes!![0])
-//            intent.putExtra("QUIZ", json)
-//            startActivity(intent)
-//        }
+        btnSubmit.setOnClickListener {
+            Log.d("FINALQUIZ", questions.toString())
+            val intent = Intent(this, ResultActivity::class.java)
+            val json  = Gson().toJson(quizzes!![0])
+//            Toast.makeText(this,json.toString(),Toast.LENGTH_SHORT).show()
+            intent.putExtra("QUIZ", json)
+            startActivity(intent)
+        }
     }
     private fun bindViews() {
         //yet to implement firebase database and delete this dummydatafunction
@@ -95,6 +97,8 @@ class TestScreen : AppCompatActivity() {
         val question3 = Question("https://drive.google.com/file/d/140erkr0zjU_Y52GUpxeCcqmkwa_Bx7Qt/view?usp=share_link")
         questions!!.put("question2", Question("kkk"))
         questions!!.put("question3",Question("kkdd"))
+        quizzes = mutableListOf(Quiz("1","title", questions!!))
+
 //        questions = mutableMapOf("question1" to question3)
     }
 
