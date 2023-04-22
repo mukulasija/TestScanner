@@ -59,6 +59,7 @@ class CreateTestIntro : Fragment() {
         registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
             if (uris != null && uris.isNotEmpty()) {
                 imageUris.addAll(uris)
+                processImages(requireContext(),imageUris)
             }
         }
 
@@ -92,8 +93,9 @@ class CreateTestIntro : Fragment() {
             val inputStream = context.contentResolver.openInputStream(uri)
             val bitmap = BitmapFactory.decodeStream(inputStream)
             val YOUR_IMAGE_CONTENT = bitmapToBase64(bitmap)
-            getStringResponse(YOUR_IMAGE_CONTENT)
+            val response = getJsonResponse(YOUR_IMAGE_CONTENT)
             inputStream?.close()
+            ResponseManipulator(requireContext(),response = response)
         }
     }
 
@@ -104,7 +106,7 @@ class CreateTestIntro : Fragment() {
 //            intent.type = PICK_IMAGES
 //            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             galleryLauncher.launch("image/*")
-            processImages(requireContext(),imageUris)
+//            processImages(requireContext(),imageUris)
         } else {
             requestPermission()
         }
@@ -180,8 +182,9 @@ class CreateTestIntro : Fragment() {
         val imageBytes = byteArrayOutputStream.toByteArray()
         return Base64.encodeToString(imageBytes, Base64.DEFAULT)
     }
-    private fun getJsonResponse(YOUR_IMAGE_CONTENT: String){
+    private fun getJsonResponse(YOUR_IMAGE_CONTENT: String) : JSONObject{
         // for a jsonObjectRequest
+        response = JSONObject()
         val queue = Volley.newRequestQueue(this.context)
         val url =
             "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDZjEOYn_0CMi23uO29JLhThjATi8Qo5MI"
@@ -190,10 +193,11 @@ class CreateTestIntro : Fragment() {
             Response.Listener { response ->
                 // Handle the response here
                 Log.d("visionApi",response.toString())
-                ResponseManipulator(requireContext(),response).getFirstLetter()
+//                ResponseManipulator(requireContext(),response).getFirstLetter()
             },
             Response.ErrorListener { error ->
                 // Handle the error here
+                Log.d("visionerror",error.toString())
                 error
             }) {
 
@@ -204,6 +208,7 @@ class CreateTestIntro : Fragment() {
                 return headers
             }
         }
+        return response
 
     }
     private fun getStringResponse(YOUR_IMAGE_CONTENT: String){
@@ -216,7 +221,7 @@ class CreateTestIntro : Fragment() {
             url,
             Response.Listener { response ->
                 // handle successful response
-                ResponseManipulator(requireContext(),JSONObject(response)).getFirstLetter()
+//                ResponseManipulator(requireContext(),JSONObject(response)).getFirstLetter()
                 Log.d("visionapi", response)
             },
             Response.ErrorListener { error ->

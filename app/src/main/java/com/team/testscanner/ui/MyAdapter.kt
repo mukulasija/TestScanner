@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.team.testscanner.R
+import com.team.testscanner.models.Quiz
 
-class MyAdapter(private val testDataList:ArrayList<TestData>):RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class MyAdapter(private val quiz:ArrayList<Quiz>):RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView=LayoutInflater.from(parent.context).inflate(R.layout.temp_layout,parent,false)
@@ -15,13 +16,13 @@ class MyAdapter(private val testDataList:ArrayList<TestData>):RecyclerView.Adapt
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val currentItem=testDataList[position]
-        holder.textTitle.text=currentItem.testtitle
-        holder.textDesc.text=currentItem.testdescription
+        val currentItem=quiz[position]
+        holder.textTitle.text=currentItem.title
+        holder.textDesc.text=currentItem.id
     }
 
     override fun getItemCount(): Int {
-        return testDataList.size
+        return quiz.size
     }
 
     class MyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){

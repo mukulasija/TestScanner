@@ -10,11 +10,11 @@ import com.team.testscanner.R
 import com.team.testscanner.models.OptionSelector
 import com.team.testscanner.models.Question
 
-class OptionAdapter(val context: Context, val question: OptionSelector) :
+class OptionAdapter(val context: Context, val op: OptionSelector, val question: Question) :
     RecyclerView.Adapter<OptionAdapter.OptionViewHolder>() {
 
     private var options: List<String> =
-        listOf(question.option1, question.option2, question.option3, question.option4)
+        listOf(op.option1, op.option2, op.option3, op.option4)
 
     inner class OptionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var optionView = itemView.findViewById<TextView>(R.id.quiz_option)

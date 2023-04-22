@@ -26,6 +26,7 @@ class TestScreen : AppCompatActivity() {
     var quizzes : MutableList<Quiz>? = null
     var questions: MutableMap<String, Question>? = null
     var index = 1
+    val optionSelector = OptionSelector()
     lateinit var btnNext : Button
     lateinit var btnPrevious : Button
     lateinit var btnSubmit : Button
@@ -35,6 +36,7 @@ class TestScreen : AppCompatActivity() {
          btnPrevious = findViewById<Button>(R.id.btnPrevious)
          btnNext = findViewById<Button>(R.id.btnNext)
          btnSubmit = findViewById<Button>(R.id.btnSubmit)
+        addDummyData()
         bindViews()
         setUpEventListener()
     }
@@ -61,7 +63,6 @@ class TestScreen : AppCompatActivity() {
     }
     private fun bindViews() {
         //yet to implement firebase database and delete this dummydatafunction
-        addDummyData()
         btnPrevious.visibility = View.GONE
         btnSubmit.visibility = View.GONE
         btnNext.visibility = View.GONE
@@ -80,9 +81,8 @@ class TestScreen : AppCompatActivity() {
         val optionList = findViewById<RecyclerView>(R.id.optionList)
         val question = questions!!["question$index"]
         question?.let {
-            var optionSelector = OptionSelector()
-            setImageWithData(it.imageUrl,it.ytop,it.yend);
-            val optionAdapter = OptionAdapter(this, optionSelector)
+//            setImageWithData(it.imageUrl,it.ytop,it.yend);
+            val optionAdapter = OptionAdapter(this, optionSelector,it)
             optionList.layoutManager = LinearLayoutManager(this)
             optionList.adapter = optionAdapter
             optionList.setHasFixedSize(true)
@@ -91,19 +91,20 @@ class TestScreen : AppCompatActivity() {
 
     private fun addDummyData() {
         questions = mutableMapOf("question1" to Question("https://www.researchgate.net/publication/255640421/figure/fig1/AS:392587958603776@1470611671200/Sample-image-and-its-feature-extraction-results-Left-Original-image-right-segmented.png",300,317,"",""))
-        questions!!.put("question2", questions!!["question1"]!!)
-        val question3 =Question("https://drive.google.com/file/d/140erkr0zjU_Y52GUpxeCcqmkwa_Bx7Qt/view?usp=share_link",300,317,"","")
-        questions!!.put("question3",question3)
-        questions = mutableMapOf("question1" to question3)
+//        questions!!.put("question2", questions!!["question1"]!!)
+        val question3 = Question("https://drive.google.com/file/d/140erkr0zjU_Y52GUpxeCcqmkwa_Bx7Qt/view?usp=share_link")
+        questions!!.put("question2", Question("kkk"))
+        questions!!.put("question3",Question("kkdd"))
+//        questions = mutableMapOf("question1" to question3)
     }
 
     private fun setImageWithData(imageUrl: String, ytop: Int, yend: Int) {
-//        val imageView = findViewById<ImageView>(R.id.question_Image)
-//        Glide.with(this)
-//            .load(imageUrl)
-//            .into(imageView)
-//
-//        return
+        val imageView = findViewById<ImageView>(R.id.question_Image)
+        Glide.with(this)
+            .load(imageUrl)
+            .into(imageView)
+
+        return
 
 //
         // Load the image using Glide

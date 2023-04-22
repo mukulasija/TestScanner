@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         fabButton.setOnClickListener {
-            openActivity()
+//            openActivity()
             //remove this function call just for testing test page
             // Create a new instance of the fragment
             val fragment = CreateTestIntro()
