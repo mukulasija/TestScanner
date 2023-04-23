@@ -226,8 +226,8 @@ class CreateTestIntro : Fragment() {
                 Response.Listener { response ->
                     // Handle the response here
                     numResponse++
-                    ResponseManipulator(requireContext(),response).main()
-                    val questionlist = ResponseManipulator(requireContext(),response).getgetquestionlist()
+                    ResponseManipulator(requireContext(),response,uri).main()
+                    val questionlist = ResponseManipulator(requireContext(),response,uri).getgetquestionlist()
                     questions.addAllQuestions(questionlist)
                     if(numRequests==numResponse){
 //                        Toast.makeText(context,"$numRequests",Toast.LENGTH_SHORT).show()

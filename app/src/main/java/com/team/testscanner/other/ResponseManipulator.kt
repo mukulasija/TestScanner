@@ -9,7 +9,7 @@ import com.team.testscanner.models.Quiz
 import org.json.JSONObject
 import kotlin.math.abs
 
-class ResponseManipulator(private val context: Context,private var response: JSONObject) {
+class ResponseManipulator(private val context: Context,private var response: JSONObject,imageUri: Uri) {
     fun getgetquestionlist(): MutableList<Question> {
         return mutableListOf(Question())
     }
@@ -38,7 +38,7 @@ class ResponseManipulator(private val context: Context,private var response: JSO
 
     data class Previous(var ytop: Int, var ydown: Int)
     data class Start(var description:String,var ytop: Int, var ydown: Int)
-    fun main(){
+    fun main() : MutableList<Question>{
 
         var prev = Previous( -100000, -100000 )
         var start=mutableListOf<Start>()
@@ -103,6 +103,28 @@ class ResponseManipulator(private val context: Context,private var response: JSO
             print(value)
         }
 
+        val imageUrl : String = ""
+
+        val questionList : MutableList<Question> = getQuestionList(questions_start,questions_end,imageUrl)
+        return questionList
+    }
+
+    private fun getQuestionList(
+        questionsStart: MutableList<Start>,
+        questionsEnd: MutableList<Start>,imageUrl : String
+    ): MutableList<Question> {
+        val index = 0
+        val questionList = mutableListOf<Question>()
+        if(questionsStart.size==0)
+            return questionList
+        while (index<questionsStart.size){
+            questionList.add(Question(imageUrl = imageUrl, ytop = questionsStart[index].ytop, yend = questionsEnd[index].ydown))
+        }
+        return questionList
+    }
+
+    fun getImageUrl(imageUri : Uri) : String{
+        return ""
     }
 //    fun upload(imageUri : Uri){
 //        val storageRef = FirebaseStorage.getInstance().reference.child("images")
