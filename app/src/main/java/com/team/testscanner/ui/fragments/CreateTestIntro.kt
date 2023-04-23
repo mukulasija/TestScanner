@@ -1,6 +1,11 @@
 package com.team.testscanner.ui.fragments
 
 
+import android.Manifest.permission.*
+import android.app.Activity
+import android.app.Activity.RESULT_OK
+import android.content.ContentValues.TAG
+
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.Context
 import android.content.pm.PackageManager
@@ -8,6 +13,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.view.TextureView
 import android.util.Base64
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -19,7 +27,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.camera.core.*
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
+import androidx.core.content.PermissionChecker.checkSelfPermission
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -35,6 +48,8 @@ import com.team.testscanner.other.ResponseManipulator
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
+import androidx.camera.core.Preview
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -48,9 +63,13 @@ private const val ARG_PARAM2 = "param2"
  */
 class CreateTestIntro : Fragment() {
     private lateinit var response : JSONObject
-    private val PICK_IMAGES = "image/*"
     private lateinit var galleryButton: Button
     private var imageUris: MutableList<Uri> = mutableListOf()
+
+    private lateinit var outputDirectory: File
+    private var imageCapture: ImageCapture? = null
+    private val imageFiles = mutableListOf<File>()
+    private lateinit var viewFinder:TextureView
     private lateinit var etTitle : TextInputEditText
     private lateinit var etDescription : TextInputEditText
 //    private lateinit var fragmentContext: Context
@@ -59,12 +78,24 @@ class CreateTestIntro : Fragment() {
 //        fragmentContext = context
 //    }
 
+
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
             if (uris != null && uris.isNotEmpty()) {
                 imageUris.addAll(uris)
             }
         }
+    private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // Get the image data from the intent and do something with it
+            val imageBitmap = result.data?.extras?.get("data") as? Bitmap
+            // ...
+        } else {
+            // The user cancelled the operation or something went wrong
+            // Show an error message or do something else
+            // ...
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,14 +103,30 @@ class CreateTestIntro : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_create_test_intro, container, false)
+        viewFinder=view.findViewById(R.id.viewFinder)
         galleryButton = view.findViewById(R.id.button_gallery)
         galleryButton.setOnClickListener {
             Log.i("TAG", "CLICKING ON THE BUTTON")
             openGallery()
         }
         val cameraButton:Button=view.findViewById(R.id.button_camera)
+        outputDirectory = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+
+        if (checkSelfPermission(requireContext(),CAMERA)== PERMISSION_GRANTED) {
+            startCamera()
+        } else {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                REQUIRED_PERMISSIONS,
+                REQUEST_CODE_PERMISSIONS
+            )
+        }
         cameraButton.setOnClickListener {
             Log.i("TAG", "CLICKING ON THE CAMERA BUTTON")
+//            if(checkSelfPermission(requireContext(),CAMERA)!= PERMISSION_GRANTED){
+//                requestPermissionLauncher.launch(CAMERA)
+//            }
+            takePhoto()
 
         }
 
@@ -102,9 +149,97 @@ class CreateTestIntro : Fragment() {
         return view
     }
 
-    private fun generateTest() {
-        processImages(requireContext(),getSelectedImages())
+    private fun takePhoto() {
+        // Create output file for the image
+        val photoFile = File(outputDirectory, "${System.currentTimeMillis()}.jpg")
+
+        // Create output options object which contains file + metadata
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
+        // Set up image capture listener, which is triggered after photo has been taken
+        imageCapture?.takePicture(
+            outputOptions,
+            ContextCompat.getMainExecutor(requireContext()),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onError(error: ImageCaptureException) {
+                    Log.e(TAG, "Photo capture failed: ${error.message}", error)
+                }
+
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    val savedUri = output.savedUri ?: Uri.fromFile(photoFile)
+                    Log.d(TAG, "Photo capture succeeded: $savedUri")
+
+                    imageFiles.add(photoFile)
+
+                    // Display a thumbnail of the captured image
+//                    thumbnail_image.setImageBitmap(BitmapFactory.decodeFile(photoFile.absolutePath))
+                }
+            }
+        )
     }
+
+    private fun startCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+
+        cameraProviderFuture.addListener({
+            // Camera provider is now guaranteed to be available
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+
+           //  Set up preview use case
+         //   val preview = Preview?.setSurfaceProvider(viewFinder.surfaceProvider)
+
+
+            // Set up image capture use case
+            imageCapture = ImageCapture.Builder()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                .build()
+            Log.i("TAG", "ERROR FOUND")
+            // Set up image analysis use case
+            val imageAnalyzer = ImageAnalysis.Builder()
+                .build()
+                .also {
+                    it.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), { image ->
+                        // Do something with the image analysis results
+                        image.close()
+                    })
+                }
+
+            // Bind all use cases to the camera
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            try {
+                // Unbind any previously bound use cases
+                cameraProvider.unbindAll()
+
+                // Bind use cases to camera
+                cameraProvider.bindToLifecycle(
+                    this, cameraSelector,imageCapture, imageAnalyzer
+                )
+
+            } catch (ex: Exception) {
+                Log.e(TAG, "Error binding camera use cases", ex)
+            }
+        }, ContextCompat.getMainExecutor(requireContext()))
+    }
+
+//    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+//        ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
+//    }
+
+
+
+//    fun processImages(context: Context, uris: List<Uri>) {
+//        for (uri in uris) {
+//            val inputStream = context.contentResolver.openInputStream(uri)
+//            val bitmap = BitmapFactory.decodeStream(inputStream)
+//            val YOUR_IMAGE_CONTENT = bitmapToBase64(bitmap)
+//            val response = getJsonResponse(YOUR_IMAGE_CONTENT)
+//            inputStream?.close()
+//            ResponseManipulator(requireContext(), response = response)
+//        }
+//    }
+//    private fun generateTest() {
+//        processImages(requireContext(),getSelectedImages())
+//    }
 
     private fun addQuizToFireStore(quiz: Quiz) {
         val collectionRef = FirebaseFirestore.getInstance().collection("quizzes")
@@ -121,6 +256,7 @@ class CreateTestIntro : Fragment() {
                 }
         }.addOnFailureListener { exception ->
             println("Error getting number of documents in collection: $exception")
+
         }
     }
 
@@ -193,6 +329,11 @@ class CreateTestIntro : Fragment() {
          * @return A new instance of fragment CreateTestIntro.
          */
         // TODO: Rename and change types and number of parameters
+        private val REQUEST_CODE_PERMISSIONS = 10
+        private val REQUIRED_PERMISSIONS = arrayOf(
+            CAMERA,
+            WRITE_EXTERNAL_STORAGE
+        )
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             CreateTestIntro().apply {
@@ -253,22 +394,7 @@ class CreateTestIntro : Fragment() {
         }
 
     }
-    fun processImages(context: Context, uris: List<Uri>) {
-        val quiz = Quiz()
-        quiz.title = etTitle.text.toString()
-        val questions : MutableMap<String,Question> = mutableMapOf()
-        for (uri in uris) {
-            val inputStream = context.contentResolver.openInputStream(uri)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-            val YOUR_IMAGE_CONTENT = bitmapToBase64(bitmap)
-            val questionList = getJsonResponse(YOUR_IMAGE_CONTENT)
-            inputStream?.close()
-//            val questionlist : MutableList<Question> = ResponseManipulator(requireContext(),response = response).getgetquestionlist()
-            questions.addAllQuestions(questionList)
-        }
-        quiz.questions = questions
-        addQuizToFireStore(quiz)
-    }
+
     private fun getJsonResponse(YOUR_IMAGE_CONTENT: String) : MutableList<Question>{
         // for a jsonObjectRequest
         var questionlist : MutableList<Question> = mutableListOf()
