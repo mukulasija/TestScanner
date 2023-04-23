@@ -33,6 +33,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.firebase:firebase-storage-ktx:20.1.0'
+
 
     // CameraX core library
     def camerax_version = "1.2.2"
