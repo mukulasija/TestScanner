@@ -1,6 +1,6 @@
 package com.team.testscanner.models
 
-data class Question(
+data class  Question(
     var imageUrl: String = "",
     var ytop : Int,
     var yend : Int,
@@ -8,4 +8,5 @@ data class Question(
     var userAnswer: String = ""
 ) {
     constructor(imageUrl: String) : this(imageUrl,10,20,"option1","")
+    constructor() : this("sample url",10,20,"option1","")
 }

@@ -1,4 +1,4 @@
-package com.team.testscanner.ui
+package com.team.testscanner.adapters
 
 import android.content.Context
 import android.content.Intent

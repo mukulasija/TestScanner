@@ -1,4 +1,4 @@
-package com.team.testscanner
+package com.team.testscanner.ui.activities
 
 import android.app.Activity
 import android.content.Intent
@@ -18,9 +18,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.team.testscanner.ui.activities.MainActivity
+import com.team.testscanner.R
 
-class Login : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient:GoogleSignInClient
@@ -39,7 +39,7 @@ class Login : AppCompatActivity() {
 
         val signuptext: TextView=findViewById(R.id.button_sign_up)
         signuptext.setOnClickListener {
-            val intent = Intent(this,SignUp::class.java)
+            val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
 
