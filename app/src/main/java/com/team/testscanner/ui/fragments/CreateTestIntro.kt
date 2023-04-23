@@ -226,6 +226,7 @@ class CreateTestIntro : Fragment() {
                 Response.Listener { response ->
                     // Handle the response here
                     numResponse++
+                    ResponseManipulator(requireContext(),response).main()
                     val questionlist = ResponseManipulator(requireContext(),response).getgetquestionlist()
                     questions.addAllQuestions(questionlist)
                     if(numRequests==numResponse){
