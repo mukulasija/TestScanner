@@ -1,11 +1,8 @@
-package com.team.testscanner.ui
+package com.team.testscanner.other
 
 import android.content.Context
-import kotlinx.coroutines.currentCoroutineContext
+import com.team.testscanner.models.Question
 import org.json.JSONObject
-import java.io.IOException
-import java.io.OutputStream
-import java.lang.Math.abs
 
 class ResponseManipulator(private val context: Context,private var response: JSONObject) {
     fun getResponse() : JSONObject{
@@ -75,6 +72,10 @@ class ResponseManipulator(private val context: Context,private var response: JSO
 //    }
 
 }
+
+    fun getgetquestionlist(): MutableList<Question> {
+        return mutableListOf(Question())
+    }
 }
 //
 //fun String.isNumeric(): Boolean {

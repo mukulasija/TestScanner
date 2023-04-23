@@ -1,16 +1,13 @@
 package com.team.testscanner.ui.fragments
 
 
-import android.Manifest.permission.CAMERA
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -24,12 +21,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.android.volley.Request
+import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.firestore.FirebaseFirestore
 import com.team.testscanner.R
-import com.team.testscanner.ui.ResponseManipulator
+import com.team.testscanner.models.Question
+import com.team.testscanner.models.Quiz
+import com.team.testscanner.other.ResponseManipulator
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
@@ -49,6 +51,8 @@ class CreateTestIntro : Fragment() {
     private val PICK_IMAGES = "image/*"
     private lateinit var galleryButton: Button
     private var imageUris: MutableList<Uri> = mutableListOf()
+    private lateinit var etTitle : TextInputEditText
+    private lateinit var etDescription : TextInputEditText
 //    private lateinit var fragmentContext: Context
 //    override fun onAttach(context: Context) {
 //        super.onAttach(context)
@@ -59,7 +63,6 @@ class CreateTestIntro : Fragment() {
         registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
             if (uris != null && uris.isNotEmpty()) {
                 imageUris.addAll(uris)
-                processImages(requireContext(),imageUris)
             }
         }
 
@@ -80,13 +83,18 @@ class CreateTestIntro : Fragment() {
 
         }
 
-        val textViewTitle=view.findViewById<TextView>(R.id.edit_test_title)
-        val textViewDesc=view.findViewById<TextView>(R.id.edit_test_description)
+        etTitle =view.findViewById(R.id.edit_test_title)
+        etDescription=view.findViewById(R.id.edit_test_description)
         val submitButton:Button=view.findViewById(R.id.button_submit_test_intro)
         submitButton.setOnClickListener {
+            if(imageUris.size==0){
+                Toast.makeText(requireContext(),"Please Select Atleast one image",Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            generate(requireContext())
+            return@setOnClickListener
             val fragmentManager = requireActivity().supportFragmentManager
             val fragment = HomeFragment()
-            fragment.addData(textViewTitle.text.toString(),textViewDesc.text.toString())
             val transaction = fragmentManager.beginTransaction()
             transaction.replace(R.id.my_fragment, fragment)
             transaction.commit()
@@ -94,14 +102,25 @@ class CreateTestIntro : Fragment() {
         return view
     }
 
-    fun processImages(context: Context, uris: List<Uri>) {
-        for (uri in uris) {
-            val inputStream = context.contentResolver.openInputStream(uri)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-            val YOUR_IMAGE_CONTENT = bitmapToBase64(bitmap)
-            val response = getJsonResponse(YOUR_IMAGE_CONTENT)
-            inputStream?.close()
-            ResponseManipulator(requireContext(),response = response)
+    private fun generateTest() {
+        processImages(requireContext(),getSelectedImages())
+    }
+
+    private fun addQuizToFireStore(quiz: Quiz) {
+        val collectionRef = FirebaseFirestore.getInstance().collection("quizzes")
+        collectionRef.get().addOnSuccessListener { querySnapshot ->
+            val numDocuments = querySnapshot.size()
+            val newDocumentNumber = numDocuments + 1
+            quiz.id = "quiz$newDocumentNumber"
+            val newQuizRef = collectionRef.document("quiz$newDocumentNumber")
+            newQuizRef.set(quiz)
+                .addOnSuccessListener {
+//                    Toast.makeText(requireContext(),it.toString(),Toast.LENGTH_SHORT).show()
+                }.addOnFailureListener{
+                    Toast.makeText(requireContext(),it.toString(),Toast.LENGTH_SHORT).show()
+                }
+        }.addOnFailureListener { exception ->
+            println("Error getting number of documents in collection: $exception")
         }
     }
 
@@ -112,7 +131,6 @@ class CreateTestIntro : Fragment() {
 //            intent.type = PICK_IMAGES
 //            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             galleryLauncher.launch("image/*")
-//            processImages(requireContext(),imageUris)
         } else {
             requestPermission()
         }
@@ -190,8 +208,69 @@ class CreateTestIntro : Fragment() {
         val imageBytes = byteArrayOutputStream.toByteArray()
         return Base64.encodeToString(imageBytes, Base64.DEFAULT)
     }
-    private fun getJsonResponse(YOUR_IMAGE_CONTENT: String) : JSONObject{
+    private fun generate(context: Context){
+        val url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDZjEOYn_0CMi23uO29JLhThjATi8Qo5MI"
+        val queue= Volley.newRequestQueue(this.context)
+        val numRequests : Int = imageUris.size
+        val quiz = Quiz()
+        quiz.title = etTitle.text.toString()
+        var questions : MutableMap<String,Question> = mutableMapOf()
+        quiz.questions = questions
+        var numResponse = 0
+        for(uri in imageUris){
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            val YOUR_IMAGE_CONTENT = bitmapToBase64(bitmap)
+            val jsonRequest : JSONObject = getJsonImageObject(YOUR_IMAGE_CONTENT)
+            val jsonObjectRequest = object : JsonObjectRequest(Method.POST, url, jsonRequest,
+                Response.Listener { response ->
+                    // Handle the response here
+                    numResponse++
+                    val questionlist = ResponseManipulator(requireContext(),response).getgetquestionlist()
+                    questions.addAllQuestions(questionlist)
+                    if(numRequests==numResponse){
+//                        Toast.makeText(context,"$numRequests",Toast.LENGTH_SHORT).show()
+                        quiz.questions= questions
+                        addQuizToFireStore(quiz)
+                    }
+//                    Log.d("visionApi",response.getString("textAnnotations"))
+                },
+                Response.ErrorListener { error ->
+                    // Handle the error here
+                    Log.d("visionerror",error.toString())
+                    error
+                }) {
+
+                // Override the getHeaders() method to add custom headers to the request
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = HashMap<String, String>()
+                    headers["Content-Type"] = "application/json"
+                    return headers
+                }
+            }
+            queue.add(jsonObjectRequest)
+        }
+
+    }
+    fun processImages(context: Context, uris: List<Uri>) {
+        val quiz = Quiz()
+        quiz.title = etTitle.text.toString()
+        val questions : MutableMap<String,Question> = mutableMapOf()
+        for (uri in uris) {
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            val YOUR_IMAGE_CONTENT = bitmapToBase64(bitmap)
+            val questionList = getJsonResponse(YOUR_IMAGE_CONTENT)
+            inputStream?.close()
+//            val questionlist : MutableList<Question> = ResponseManipulator(requireContext(),response = response).getgetquestionlist()
+            questions.addAllQuestions(questionList)
+        }
+        quiz.questions = questions
+        addQuizToFireStore(quiz)
+    }
+    private fun getJsonResponse(YOUR_IMAGE_CONTENT: String) : MutableList<Question>{
         // for a jsonObjectRequest
+        var questionlist : MutableList<Question> = mutableListOf()
         response = JSONObject()
         val queue = Volley.newRequestQueue(this.context)
         val url =
@@ -201,9 +280,8 @@ class CreateTestIntro : Fragment() {
             Response.Listener { response ->
                 // Handle the response here
                 this.response = response
-
                 Log.d("visionApi",response.getString("textAnnotations"))
-//                ResponseManipulator(requireContext(),response).getFirstLetter()
+                questionlist = ResponseManipulator(requireContext(),response).getgetquestionlist()
             },
             Response.ErrorListener { error ->
                 // Handle the error here
@@ -222,7 +300,7 @@ class CreateTestIntro : Fragment() {
 //        sendData(response.toString())
 //        writeStringToFile(requireContext(), response.toString())
 //        File("output.txt").writeText(response.toString())
-        return response
+        return questionlist
 
     }
 
@@ -304,5 +382,12 @@ class CreateTestIntro : Fragment() {
             })
         })
         return jsonRequest
+    }
+}
+
+fun MutableMap<String, Question>.addAllQuestions(questions: MutableList<Question>) {
+    val nextKey = (this.keys.mapNotNull { it.toIntOrNull() }.maxOrNull() ?: 0) + 1
+    for ((index, question) in questions.withIndex()) {
+        this[(nextKey + index).toString()] = question
     }
 }
