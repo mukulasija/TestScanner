@@ -1,27 +1,28 @@
 package com.team.testscanner.other
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.team.testscanner.models.Question
 import com.team.testscanner.models.Quiz
 import org.json.JSONObject
 import kotlin.math.abs
 
-class ResponseManipulator(private val context: Context,private var response: JSONObject,imageUri: Uri) {
-    fun getgetquestionlist(): MutableList<Question> {
-        return mutableListOf(Question())
-    }
-    val responses = response
-    fun getTextAnnotations(){
-        val texts = response.getJSONArray("responses").getJSONObject(0).getJSONArray("textAnnotations")
-        for(i in 0 until texts.length()){
-            val text = texts.getJSONArray(i)
-        }
-//        val texts = response.getJSONArray("responses").getJSONArray(0)
-        print(texts)
-    }
+class ResponseManipulator(private val context: Context, private var response: JSONObject,
+                          val imageUri: Uri
+) {
+//    fun getgetquestionlist(): MutableList<Question> {
+//        return mutableListOf(Question())
+//    }
+    var questions_start = mutableListOf<Start>()
+    var questions_end = mutableListOf<Start>()
+    var imageUrl : String = ""
+    var task_done =0
+    val questionlist = mutableListOf<Question>()
     data class MyObject(
         val description: String,
         val boundingPoly: BoundingPoly
@@ -39,9 +40,8 @@ class ResponseManipulator(private val context: Context,private var response: JSO
     data class Previous(var ytop: Int, var ydown: Int)
     data class Start(var description:String,var ytop: Int, var ydown: Int)
     fun main() : MutableList<Question>{
-
-        var prev = Previous( -100000, -100000 )
-        var start=mutableListOf<Start>()
+        val prev = Previous( -100000, -100000 )
+        val start=mutableListOf<Start>()
         val gson  = Gson()
         var new_ytop:Int=0;
         var new_ydown:Int=0;
@@ -64,8 +64,7 @@ class ResponseManipulator(private val context: Context,private var response: JSO
         start.sortBy{it.ytop}
 
 
-        var questions_start = mutableListOf<Start>()
-        var questions_end = mutableListOf<Start>()
+
 
         var index:Int=0;
 
@@ -80,6 +79,8 @@ class ResponseManipulator(private val context: Context,private var response: JSO
                 questions_start.add(value)
             }
             index=index+1
+            upload()
+
         }
 
 //        for(value in start){
@@ -103,52 +104,60 @@ class ResponseManipulator(private val context: Context,private var response: JSO
             print(value)
         }
 
-        val imageUrl : String = ""
-
-        val questionList : MutableList<Question> = getQuestionList(questions_start,questions_end,imageUrl)
-        return questionList
-    }
-
-    private fun getQuestionList(
-        questionsStart: MutableList<Start>,
-        questionsEnd: MutableList<Start>,imageUrl : String
-    ): MutableList<Question> {
-        val index = 0
-        val questionList = mutableListOf<Question>()
-        if(questionsStart.size==0)
-            return questionList
-        while (index<questionsStart.size){
-            questionList.add(Question(imageUrl = imageUrl, ytop = questionsStart[index].ytop, yend = questionsEnd[index].ydown))
+        while (task_done!=1){
         }
-        return questionList
+        getQuestionList()
+        return questionlist
+//        val questionList : MutableList<Question> = getQuestionList(questions_start,questions_end)
+//        return questionList
     }
-
-    fun getImageUrl(imageUri : Uri) : String{
-        return ""
+    private fun getQuestionList() : MutableList<Question>{
+        var index = 0
+        if(questions_start.size==0){
+            return questionlist
+        }
+        while (index<questions_start.size){
+            questionlist.add(Question(imageUrl = imageUrl, ytop = questions_start[index].ytop, yend = questions_end[index].ydown))
+            index=index+1
+        }
+        task_done = 1
+        return questionlist
     }
-//    fun upload(imageUri : Uri){
-//        val storageRef = FirebaseStorage.getInstance().reference.child("images")
-//        if (imageUri != null) {
-//            val imageName = imageUri.lastPathSegment
-//            val imageRef = storageRef.child(imageName)
-//
-//            // Upload the image file to Firebase Storage
-//            imageRef.putFile(imageUri).addOnSuccessListener {
-//                // Get the download URL of the image file
-//                imageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
-//                    // Store the download URL in Firestore
-//                    val image = hashMapOf(
-//                        "name" to imageName,
-//                        "url" to downloadUrl.toString()
-//                    )
-//                    val db = FirebaseFirestore.getInstance()
-//                    db.collection("images").document(imageName).set(image)
-//                }
-//            }.addOnFailureListener { e ->
-//                // Handle the upload error
-//                Log.e(TAG, "Upload failed: ", e)
-//            }
+//    private fun getQuestionList(
+//        questionsStart: MutableList<Start>,
+//        questionsEnd: MutableList<Start>
+//    ): MutableList<Question> {
+//        var index = 0
+//        val questionList = mutableListOf<Question>()
+//        if(questionsStart.size==0)
+//            return questionList
+//        while (index<questionsStart.size){
+//            questionList.add(Question(imageUrl = imageUrl, ytop = questionsStart[index].ytop, yend = questionsEnd[index].ydown))
+//            index=index+1
 //        }
+//        return questionList
 //    }
+
+    fun upload(){
+        val storageRef = FirebaseStorage.getInstance().reference.child("images")
+        if (imageUri != null) {
+            val imageName = imageUri.lastPathSegment
+            val imageRef = storageRef.child(imageName!!)
+
+            // Upload the image file to Firebase Storage
+            imageRef.putFile(imageUri).addOnSuccessListener {
+                // Get the download URL of the image file
+                imageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
+                    // Store the download URL in Firestore\
+                    imageUrl = downloadUrl.toString()
+                    task_done=1
+                }
+            }.addOnFailureListener { e ->
+                task_done=1
+                // Handle the upload error
+                Log.e(TAG, "Upload failed: ", e)
+            }
+        }
+    }
 }
 
