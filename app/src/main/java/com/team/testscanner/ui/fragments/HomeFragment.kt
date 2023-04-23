@@ -7,13 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.FirebaseFirestore
 import com.team.testscanner.R
 import com.team.testscanner.models.Quiz
-import com.team.testscanner.ui.MyAdapter
+import com.team.testscanner.adapters.MyAdapter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,10 +35,10 @@ class HomeFragment : Fragment() {
 //    private var quizList: ArrayList<Quiz> =arrayListOf<Quiz>()
     private var quizList = mutableListOf<Quiz>()
     private lateinit var adapter: MyAdapter
+    private lateinit var firestore : FirebaseFirestore
 //    lateinit var textTitle:Array<String>
 //    lateinit var textDesc:Array<String>
 //    lateinit var testData:Array<String>
-//
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +50,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dataInitilizate()    //dummy data  //to remove it after
+//        dataInitilizate()    //dummy data  //to remove it after
         adapter = MyAdapter(requireContext(),quizList)
+        setUpFireStore()
         setUpRecyclerView(view)
     }
 
@@ -85,25 +85,43 @@ class HomeFragment : Fragment() {
         val quiz = Quiz("1","title")
 //        val test=TestData( getString(R.string.demo_1), getString(R.string.demo_1))
         quizList.add(quiz)
+        firestore = FirebaseFirestore.getInstance()
+        firestore.collection("quizzes").document("quizzes").set(quizList[0])
 
     }
 
-    //// firestore initialization
+    // firestore initialization
+    private fun setUpFireStore() {
+        firestore = FirebaseFirestore.getInstance()
+        val collectionReference = firestore.collection("quizzes")
+        collectionReference.addSnapshotListener { value, error ->
+            if(value == null || error != null){
+                Toast.makeText(requireContext(), "Error fetching data", Toast.LENGTH_SHORT).show()
+                return@addSnapshotListener
+            }
+            Log.d("DATA", value.toObjects(Quiz::class.java).toString())
+            quizList.clear()
+            quizList.addAll(value.toObjects(Quiz::class.java))
+            adapter.notifyDataSetChanged()
+        }
+    }
+
 //    private fun setUpFireStore() {
 //        firestore = FirebaseFirestore.getInstance()
 //        val collectionReference = firestore.collection("quizzes")
 //        collectionReference.addSnapshotListener { value, error ->
 //            if(value == null || error != null){
-//                Toast.makeText(this, "Error fetching data", Toast.LENGTH_SHORT).show()
+//
+//                Toast.makeText(requireContext(),error.toString(),Toast.LENGTH_SHORT).show()
 //                return@addSnapshotListener
 //            }
-//            Log.d("DATA", value.toObjects(Quiz::class.java).toString())
-//            quizList.clear()
-//            quizList.addAll(value.toObjects(Quiz::class.java))
-//            adapter.notifyDataSetChanged()
+//            Log.d("mukulfirebase",value.toString())
+////            Log.d("DATA", value.toObjects(Quiz::class.java).toString())
+////            quizList.clear()
+////            quizList.addAll(value.toObjects(Quiz::class.java))
+////            adapter.notifyDataSetChanged()
 //        }
 //    }
-
      fun addData(string1:String,string2:String){
 //         val test=TestData( string1, string2)
 //         quizList.add(test)

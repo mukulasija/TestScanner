@@ -2,7 +2,6 @@ package com.team.testscanner.ui.activities
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,21 +9,21 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.team.testscanner.R
 import com.team.testscanner.adapters.OptionAdapter
 import com.team.testscanner.models.OptionSelector
 import com.team.testscanner.models.Question
 import com.team.testscanner.models.Quiz
-import java.net.URL
 
 class TestScreen : AppCompatActivity() {
+    lateinit var firestore: FirebaseFirestore
     var quizzes : MutableList<Quiz>? = null
     var questions: MutableMap<String, Question>? = null
     var index = 1
@@ -38,9 +37,11 @@ class TestScreen : AppCompatActivity() {
          btnPrevious = findViewById<Button>(R.id.btnPrevious)
          btnNext = findViewById<Button>(R.id.btnNext)
          btnSubmit = findViewById<Button>(R.id.btnSubmit)
-        addDummyData()
-        bindViews()
+//        addDummyData()
+//        bindViews()
+        setUpFirestore()
         setUpEventListener()
+//        bindViews()
     }
     private fun setUpEventListener() {
 
@@ -91,14 +92,31 @@ class TestScreen : AppCompatActivity() {
         }
     }
 
+    private fun setUpFirestore() {
+        firestore = FirebaseFirestore.getInstance()
+        var id = intent.getStringExtra("id")
+        if (id != null) {
+            firestore.collection("quizzes").whereEqualTo("id",id)
+                .get()
+                .addOnSuccessListener {
+                    if(it != null && !it.isEmpty){
+                        quizzes = it.toObjects(Quiz::class.java)
+                        questions = quizzes!![0].questions
+                        bindViews()
+                    }
+                }
+        }
+    }
     private fun addDummyData() {
-        questions = mutableMapOf("question1" to Question("https://www.researchgate.net/publication/255640421/figure/fig1/AS:392587958603776@1470611671200/Sample-image-and-its-feature-extraction-results-Left-Original-image-right-segmented.png",300,317,"",""))
+        questions = mutableMapOf("question1" to Question("https://www.researchgate.net/publication/255640421/figure/fig1/AS:392587958603776@1470611671200/Sample-image-and-its-feature-extraction-results-Left-Original-image-right-segmented.png",300,317,"option2",""))
 //        questions!!.put("question2", questions!!["question1"]!!)
         val question3 = Question("https://drive.google.com/file/d/140erkr0zjU_Y52GUpxeCcqmkwa_Bx7Qt/view?usp=share_link")
         questions!!.put("question2", Question("kkk"))
         questions!!.put("question3",Question("kkdd"))
         quizzes = mutableListOf(Quiz("1","title", questions!!))
-
+        firestore = FirebaseFirestore.getInstance()
+        val firebasecollection = firestore.collection("quizzes")
+        firebasecollection.document("quiz1").set(quizzes!![0])
 //        questions = mutableMapOf("question1" to question3)
     }
 

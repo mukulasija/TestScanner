@@ -13,7 +13,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.team.testscanner.Login
 import com.team.testscanner.R
 import com.team.testscanner.ui.fragments.AnalyticsFragment
 import com.team.testscanner.ui.fragments.CreateTestIntro
@@ -65,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                     mGoogleSignInClient.signOut()
                     auth = Firebase.auth
                     Firebase.auth.signOut()
-                    val intent = Intent(this, Login::class.java)
+                    val intent = Intent(this, LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                     true
