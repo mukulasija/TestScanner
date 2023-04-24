@@ -46,12 +46,14 @@ class ResultsFragment : Fragment() {
         setUpFireStore()
         setUpRecyclerView(view)
     }
+
     private fun setUpRecyclerView(view : View){
         val layoutManager= LinearLayoutManager(context)
         val recyclerView: RecyclerView = view.findViewById(R.id.results_recyclerView)
         recyclerView.layoutManager=layoutManager
         recyclerView.adapter=adapter
     }
+
     private fun setUpFireStore() {
         firestore = FirebaseFirestore.getInstance()
         val collectionReference = firestore.collection("quizzes").whereEqualTo("attempted",true)
@@ -60,7 +62,7 @@ class ResultsFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error fetching data", Toast.LENGTH_SHORT).show()
                 return@addSnapshotListener
             }
-            Log.d("DATA", value.toObjects(Quiz::class.java).toString())
+//            Log.d("DATA", value.toObjects(Quiz::class.java).toString())
             quizList.clear()
             quizList.addAll(value.toObjects(Quiz::class.java))
             adapter.notifyDataSetChanged()

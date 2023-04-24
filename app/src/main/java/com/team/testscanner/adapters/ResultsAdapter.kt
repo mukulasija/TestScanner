@@ -1,6 +1,7 @@
 package com.team.testscanner.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.team.testscanner.R
 import com.team.testscanner.models.Quiz
+import com.team.testscanner.ui.activities.AnalysisActivity
 
 class ResultsAdapter(val context : Context, private val quiz:MutableList<Quiz>):RecyclerView.Adapter<ResultsAdapter.MyViewHolder>() {
 
@@ -28,7 +30,16 @@ class ResultsAdapter(val context : Context, private val quiz:MutableList<Quiz>):
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem=quiz[position]
         holder.textTitle.text=currentItem.title
+        holder.resultsButton.setOnClickListener {
+            val intent = Intent(context,AnalysisActivity::class.java)
+            intent.putExtra("id",currentItem.id)
+            context.startActivity(intent)
+        }
         holder.textScore.text= currentItem.score.toString()
+        if(currentItem.isKeyAvailable==false){
+            holder.textScore.setTextColor(Color.RED)
+            holder.textScore.text="Please Add answer key"
+        }
     }
 
     override fun getItemCount(): Int {

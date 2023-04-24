@@ -24,7 +24,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:text="Test desc"
+        android:text="0"
         android:textSize="14sp"
         android:layout_margin="10dp"
         app:layout_constraintEnd_toEndOf="@id/result_button"

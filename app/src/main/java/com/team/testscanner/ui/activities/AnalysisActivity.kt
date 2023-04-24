@@ -2,12 +2,15 @@ package com.team.testscanner.ui.activities
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Base64
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +33,8 @@ class AnalysisActivity : AppCompatActivity() {
     lateinit var btnNext : Button
     lateinit var btnPrevious : Button
     lateinit var btnSubmit : Button
-    val optionSelector = OptionSelector()
+    lateinit var questionImageView : ImageView
+//    val optionSelector = OptionSelector()
     lateinit var optionSelectorList : MutableList<OptionSelector>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +42,7 @@ class AnalysisActivity : AppCompatActivity() {
         btnPrevious = findViewById<Button>(R.id.btnPreviousAk)
         btnNext = findViewById<Button>(R.id.btnNextAk)
         btnSubmit = findViewById<Button>(R.id.btnSubmitAk)
+        questionImageView = findViewById(R.id.question_ImageAk)
 //        setupQuiz()
         setUpFirestore()
         setUpEventListener()
@@ -65,6 +70,7 @@ class AnalysisActivity : AppCompatActivity() {
 
         btnSubmit.setOnClickListener {
             updateAnswerKey()
+            calculateScore()
             addAnswerKeyToFirebase(quizzes!![0])
         }
     }
@@ -81,12 +87,25 @@ class AnalysisActivity : AppCompatActivity() {
                 Toast.makeText(this,"Some Error Occurred",Toast.LENGTH_SHORT).show()
             }
     }
+    private fun calculateScore() {
+        var score = 0
+        for (entry in quizzes!![0].questions.entries) {
+            val question = entry.value
+            if (question.answer == question.userAnswer) {
+                score += quizzes!![0].marksPerQuestion
+            }
+        }
+//        val txtScore = findViewById<TextView>(R.id.test_score)
+//        txtScore.text = "Your Score : $score"
+        quizzes!![0].score=score
+    }
     private fun updateAnswerKey() {
         var index = 1
         while(index <= questions!!.size){
             questions!!["$index"]!!.answer= optionSelectorList[index-1].userAnswer
             index=index+1
         }
+        quizzes!![0].isKeyAvailable=true
     }
     private fun bindViews() {
         //yet to implement firebase database and delete this dummydatafunction
@@ -113,12 +132,28 @@ class AnalysisActivity : AppCompatActivity() {
         val question = questions!!["$index"]
         val optionSelector = optionSelectorList[index-1]
         question?.let {
-            setImageWithData(it.imageUrl,it.ytop,it.yend);
+//            setImageWithData(it.imageUrl,it.ytop,it.yend);
+            loadBase64ImageWithUrl(it.imageUrl,it.ytop,it.yend)
             val optionAdapter = OptionAdapter(this, optionSelector,it)
             optionList.layoutManager = LinearLayoutManager(this)
             optionList.adapter = optionAdapter
             optionList.setHasFixedSize(true)
         }
+    }
+    fun loadBase64ImageWithUrl(base64Image: String, ytop: Int, yend: Int) {
+        val decodedBytes = Base64.decode(base64Image, Base64.DEFAULT)
+        val bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+
+        val croppedBitmap = Bitmap.createBitmap(
+            bitmap,
+            0, ytop,
+            bitmap.width,
+            yend - ytop
+        )
+
+        Glide.with(questionImageView)
+            .load(croppedBitmap)
+            .into(questionImageView)
     }
     private fun setImageWithData(imageUrl: String, ytop: Int, yend: Int) {
 //        Glide.with(this)

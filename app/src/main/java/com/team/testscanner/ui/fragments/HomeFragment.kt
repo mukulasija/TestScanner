@@ -99,7 +99,7 @@ class HomeFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error fetching data", Toast.LENGTH_SHORT).show()
                 return@addSnapshotListener
             }
-            Log.d("DATA", value.toObjects(Quiz::class.java).toString())
+         //   Log.d("DATA", value.toObjects(Quiz::class.java).toString())
             quizList.clear()
             quizList.addAll(value.toObjects(Quiz::class.java))
             adapter.notifyDataSetChanged()

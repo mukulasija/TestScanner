@@ -60,6 +60,7 @@ class TestScreen : AppCompatActivity() {
 
         btnSubmit.setOnClickListener {
             updateAttempt()
+            calculateScore()
             addResonses(quizzes!![0])
             val intent = Intent(this,MainActivity::class.java)
             startActivity(intent)
@@ -81,6 +82,18 @@ class TestScreen : AppCompatActivity() {
                 Toast.makeText(this,"Some Error Occurred",Toast.LENGTH_SHORT).show()
             }
     }
+    private fun calculateScore() {
+        var score = 0
+        for (entry in quizzes!![0].questions.entries) {
+            val question = entry.value
+            if (question.answer == question.userAnswer) {
+                score += quizzes!![0].marksPerQuestion
+            }
+        }
+//        val txtScore = findViewById<TextView>(R.id.test_score)
+//        txtScore.text = "Your Score : $score"
+        quizzes!![0].score=score
+    }
 
     private fun updateAttempt() {
         var index = 1
@@ -88,6 +101,7 @@ class TestScreen : AppCompatActivity() {
             questions!!["$index"]!!.userAnswer= optionSelectorList[index-1].userAnswer
             index=index+1
         }
+        quizzes!![0].isAttempted=true
     }
 
     private fun bindViews() {
