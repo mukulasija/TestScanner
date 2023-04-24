@@ -4,10 +4,10 @@
 - [x] Api Response
 - [ ] Response Manipulation
 - [x] Test Screen
-- [ ] Firestore
+- [X] Firestore
 - [ ] Result Activity
 - [ ] Settings
-- [ ] Authentication
+- [X] Authentication
 - [ ] Camera Multiple Images
 - [ ] Images Preview
 

@@ -39,10 +39,11 @@
                 android:textColor="@android:color/white" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/txtAnswer"
-            style="@style/TextAppearance.AppCompat.Body1"
+
+        <Button
+            android:id="@+id/viewAnalysis"
             android:layout_width="0dp"
+            android:text="Questionwise Analysis"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"

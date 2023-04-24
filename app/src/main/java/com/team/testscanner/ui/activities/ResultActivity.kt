@@ -4,7 +4,10 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Html
+import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.team.testscanner.R
 import com.team.testscanner.models.Quiz
@@ -16,13 +19,29 @@ class ResultActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
         setUpViews()
+
 //        setAnswerView()   //// used for showing result with the help of html but not using this
     }
     private fun setUpViews() {
         val quizData = intent.getStringExtra("QUIZ")
         quiz = Gson().fromJson<Quiz>(quizData, Quiz::class.java)
         calculateScore()
+        addScoreToFirebase()
+        val analysisBtn = findViewById<Button>(R.id.viewAnalysis)
+        analysisBtn.setOnClickListener {
+
+        }
 //        setAnswerView()
+    }
+
+    private fun addScoreToFirebase() {
+        val collectionRef = FirebaseFirestore.getInstance().collection("quizzes")
+        collectionRef.document(quiz.id).set(quiz)
+            .addOnSuccessListener {
+                Toast.makeText(this,"Result updated successfully",Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener {
+                Toast.makeText(this,"Some Error Occurred",Toast.LENGTH_SHORT).show()
+            }
     }
 //    private fun setAnswerView() {
 //        val builder = StringBuilder("")
@@ -44,10 +63,11 @@ class ResultActivity : AppCompatActivity() {
         for (entry in quiz.questions.entries) {
             val question = entry.value
             if (question.answer == question.userAnswer) {
-                score += 10
+                score += quiz.marksPerQuestion
             }
         }
         val txtScore = findViewById<TextView>(R.id.txtScore)
         txtScore.text = "Your Score : $score"
+        quiz.score=score
     }
 }
