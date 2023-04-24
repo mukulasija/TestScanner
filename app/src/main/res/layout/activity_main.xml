@@ -12,7 +12,8 @@
         android:id="@+id/my_fragment"
         android:name="com.team.testscanner.ui.fragments.HomeFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"/>
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
