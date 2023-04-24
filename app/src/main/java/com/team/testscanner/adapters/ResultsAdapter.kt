@@ -1,5 +1,7 @@
 package com.team.testscanner.adapters
 
+import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.team.testscanner.R
 import com.team.testscanner.models.Quiz
 
-class ResultsAdapter(private val quiz:MutableList<Quiz>):RecyclerView.Adapter<ResultsAdapter.MyViewHolder>() {
+class ResultsAdapter(val context : Context, private val quiz:MutableList<Quiz>):RecyclerView.Adapter<ResultsAdapter.MyViewHolder>() {
 
 
     inner class MyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
         val textTitle: TextView =itemView.findViewById(R.id.test_title_text)
-        val textDesc: TextView =itemView.findViewById(R.id.test_title_desc)
+        val textScore: TextView =itemView.findViewById(R.id.test_score)
         val resultsButton : Button = itemView.findViewById(R.id.result_button)
     }
 
@@ -26,7 +28,7 @@ class ResultsAdapter(private val quiz:MutableList<Quiz>):RecyclerView.Adapter<Re
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem=quiz[position]
         holder.textTitle.text=currentItem.title
-        holder.textDesc.text=currentItem.id
+        holder.textScore.text= currentItem.score.toString()
     }
 
     override fun getItemCount(): Int {

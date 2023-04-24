@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     <TextView
-        android:id="@+id/test_title_desc"
+        android:id="@+id/test_score"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
@@ -44,7 +44,7 @@
         android:layout_height="1dp"
         android:layout_margin="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/test_title_desc" />
+        app:layout_constraintTop_toBottomOf="@id/test_score" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

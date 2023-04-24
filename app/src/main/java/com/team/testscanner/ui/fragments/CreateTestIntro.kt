@@ -49,6 +49,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
 import androidx.camera.core.Preview
+import com.google.firebase.storage.FirebaseStorage
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -65,7 +66,7 @@ class CreateTestIntro : Fragment() {
     private lateinit var response : JSONObject
     private lateinit var galleryButton: Button
     private var imageUris: MutableList<Uri> = mutableListOf()
-
+    private var imageUrls : MutableList<String> = mutableListOf()
     private lateinit var outputDirectory: File
     private var imageCapture: ImageCapture? = null
     private val imageFiles = mutableListOf<File>()
@@ -138,6 +139,7 @@ class CreateTestIntro : Fragment() {
                 Toast.makeText(requireContext(),"Please Select Atleast one image",Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+//            upload(imageUris)
             generate(requireContext())
             return@setOnClickListener
             val fragmentManager = requireActivity().supportFragmentManager
@@ -241,7 +243,8 @@ class CreateTestIntro : Fragment() {
 //        processImages(requireContext(),getSelectedImages())
 //    }
 
-    private fun addQuizToFireStore(quiz: Quiz) {
+    private fun addQuizToFireStore(quiz: Quiz,questions: MutableMap<String,Question>) {
+        quiz.questions= questions
         val collectionRef = FirebaseFirestore.getInstance().collection("quizzes")
         collectionRef.get().addOnSuccessListener { querySnapshot ->
             val numDocuments = querySnapshot.size()
@@ -250,7 +253,7 @@ class CreateTestIntro : Fragment() {
             val newQuizRef = collectionRef.document("quiz$newDocumentNumber")
             newQuizRef.set(quiz)
                 .addOnSuccessListener {
-//                    Toast.makeText(requireContext(),it.toString(),Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),"Test Created Successfully",Toast.LENGTH_SHORT).show()
                 }.addOnFailureListener{
                     Toast.makeText(requireContext(),it.toString(),Toast.LENGTH_SHORT).show()
                 }
@@ -349,6 +352,32 @@ class CreateTestIntro : Fragment() {
         val imageBytes = byteArrayOutputStream.toByteArray()
         return Base64.encodeToString(imageBytes, Base64.DEFAULT)
     }
+    fun upload(imageUris : MutableList<Uri>){
+        val numRequests : Int = imageUris.size
+        for(imageUri in imageUris){
+            val storageRef = FirebaseStorage.getInstance().reference.child("images")
+            if (imageUri != null) {
+                val imageName = imageUri.lastPathSegment
+                val imageRef = storageRef.child(imageName!!)
+                // Upload the image file to Firebase Storage
+                imageRef.putFile(imageUri).addOnSuccessListener {
+                    // Get the download URL of the image file
+                    imageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
+                        Log.d("upload","success")
+                        // Store the download URL in Firestore\
+
+                        Toast.makeText(context,"done",Toast.LENGTH_SHORT).show()
+                    }
+                }.addOnFailureListener { e ->
+                    // Handle the upload error
+                    Log.e(TAG, "Upload failed: ", e)
+                    Toast.makeText(context,"failed",Toast.LENGTH_SHORT).show()
+
+                }
+            }
+        }
+
+    }
     private fun generate(context: Context){
         val url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDZjEOYn_0CMi23uO29JLhThjATi8Qo5MI"
         val queue= Volley.newRequestQueue(this.context)
@@ -367,13 +396,13 @@ class CreateTestIntro : Fragment() {
                 Response.Listener { response ->
                     // Handle the response here
                     numResponse++
-                    val questionlist = ResponseManipulator(requireContext(),response,uri).main()
+                    val questionlist = ResponseManipulator(requireContext(),response,YOUR_IMAGE_CONTENT).main()
 //                    val questionlist = ResponseManipulator(requireContext(),response,uri).getgetquestionlist()
                     questions.addAllQuestions(questionlist)
                     if(numRequests==numResponse){
 //                        Toast.makeText(context,"$numRequests",Toast.LENGTH_SHORT).show()
                         quiz.questions= questions
-                        addQuizToFireStore(quiz)
+                        addQuizToFireStore(quiz,questions)
                     }
 //                    Log.d("visionApi",response.getString("textAnnotations"))
                 },

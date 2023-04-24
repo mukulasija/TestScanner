@@ -2,9 +2,11 @@ package com.team.testscanner.ui.activities
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -32,12 +34,14 @@ class TestScreen : AppCompatActivity() {
     lateinit var btnPrevious : Button
     lateinit var optionSelectorList : MutableList<OptionSelector>
     lateinit var btnSubmit : Button
+    lateinit var questionImageView : ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test_screen)
          btnPrevious = findViewById<Button>(R.id.btnPrevious)
          btnNext = findViewById<Button>(R.id.btnNext)
          btnSubmit = findViewById<Button>(R.id.btnSubmit)
+        questionImageView = findViewById(R.id.question_Image)
         setUpFirestore()
         setUpEventListener()
     }
@@ -97,7 +101,8 @@ class TestScreen : AppCompatActivity() {
         val question = questions!!["$index"]
         val optionSelector = optionSelectorList[index-1]
         question?.let {
-            setImageWithData(it.imageUrl,it.ytop,it.yend);
+            loadBase64ImageWithUrl(it.imageUrl,it.ytop,it.yend)
+//            setImageWithData(it.imageUrl,it.ytop,it.yend);
             val optionAdapter = OptionAdapter(this, optionSelector,it)
             optionList.layoutManager = LinearLayoutManager(this)
             optionList.adapter = optionAdapter
@@ -133,6 +138,22 @@ class TestScreen : AppCompatActivity() {
         firebasecollection.document("quiz1").set(quizzes!![0])
 //        questions = mutableMapOf("question1" to question3)
     }
+    fun loadBase64ImageWithUrl(base64Image: String, ytop: Int, yend: Int) {
+        val decodedBytes = Base64.decode(base64Image, Base64.DEFAULT)
+        val bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+
+        val croppedBitmap = Bitmap.createBitmap(
+            bitmap,
+            0, ytop,
+            bitmap.width,
+            yend - ytop
+        )
+
+        Glide.with(questionImageView)
+            .load(croppedBitmap)
+            .into(questionImageView)
+    }
+
 
     private fun setImageWithData(imageUrl: String, ytop: Int, yend: Int) {
         val imageView = findViewById<ImageView>(R.id.question_Image)
