@@ -3,28 +3,25 @@ package com.team.testscanner.ui.fragments
 
 import android.Manifest.permission.*
 import android.app.Activity
-import android.app.Activity.RESULT_OK
 import android.content.ContentValues.TAG
-
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.Context
 import android.content.pm.PackageManager
+import kotlinx.coroutines.async
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
-import android.view.TextureView
 import android.util.Base64
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.TextureView
 import android.view.View
-import android.widget.Button
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.*
@@ -33,8 +30,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.content.PermissionChecker.checkSelfPermission
+import androidx.fragment.app.Fragment
 import com.android.volley.Request
-import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
@@ -48,7 +45,6 @@ import com.team.testscanner.other.ResponseManipulator
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
-import androidx.camera.core.Preview
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -71,7 +67,6 @@ class CreateTestIntro : Fragment() {
     private val imageFiles = mutableListOf<File>()
     private lateinit var viewFinder:TextureView
     private lateinit var etTitle : TextInputEditText
-    private lateinit var etDescription : TextInputEditText
 //    private lateinit var fragmentContext: Context
 //    override fun onAttach(context: Context) {
 //        super.onAttach(context)
@@ -85,17 +80,21 @@ class CreateTestIntro : Fragment() {
                 imageUris.addAll(uris)
             }
         }
-    private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // Get the image data from the intent and do something with it
-            val imageBitmap = result.data?.extras?.get("data") as? Bitmap
-            // ...
-        } else {
-            // The user cancelled the operation or something went wrong
-            // Show an error message or do something else
-            // ...
+    private val pickMultipleMedia =
+        registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(20)) { uris ->
+            // Callback is invoked after the user selects media items or closes the
+            // photo picker.
+            if (uris != null && uris.isNotEmpty()) {
+                Log.d("PhotoPicker", "Number of items selected: ${uris.size}")
+                imageUris.addAll(uris)
+            } else {
+                Log.d("PhotoPicker", "No media selected")
+            }
         }
+    private fun updateSelectedImageCount():Int {
+        return imageUris.size
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -105,10 +104,15 @@ class CreateTestIntro : Fragment() {
         val view = inflater.inflate(R.layout.fragment_create_test_intro, container, false)
         viewFinder=view.findViewById(R.id.viewFinder)
         galleryButton = view.findViewById(R.id.button_gallery)
+        val imagesCount=view.findViewById<TextView>(R.id.show_images_count)
         galleryButton.setOnClickListener {
             Log.i("TAG", "CLICKING ON THE BUTTON")
             openGallery()
+            imagesCount.text = updateSelectedImageCount().toString()
+            Log.d("PhotoPicker", "image count: ${imageUris.size}")
+
         }
+
         val cameraButton:Button=view.findViewById(R.id.button_camera)
         outputDirectory = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
 
@@ -121,6 +125,7 @@ class CreateTestIntro : Fragment() {
                 REQUEST_CODE_PERMISSIONS
             )
         }
+
         cameraButton.setOnClickListener {
             Log.i("TAG", "CLICKING ON THE CAMERA BUTTON")
 //            if(checkSelfPermission(requireContext(),CAMERA)!= PERMISSION_GRANTED){
@@ -131,7 +136,6 @@ class CreateTestIntro : Fragment() {
         }
 
         etTitle =view.findViewById(R.id.edit_test_title)
-        etDescription=view.findViewById(R.id.edit_test_description)
         val submitButton:Button=view.findViewById(R.id.button_submit_test_intro)
         submitButton.setOnClickListener {
             if(imageUris.size==0){
@@ -266,7 +270,10 @@ class CreateTestIntro : Fragment() {
 //            val intent = Intent(Intent.ACTION_GET_CONTENT)
 //            intent.type = PICK_IMAGES
 //            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            galleryLauncher.launch("image/*")
+           // galleryLauncher.launch("image/*")
+
+             pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+
         } else {
             requestPermission()
         }
@@ -468,7 +475,7 @@ class CreateTestIntro : Fragment() {
             "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDZjEOYn_0CMi23uO29JLhThjATi8Qo5MI"
         val jsonRequest : JSONObject = getJsonImageObject(YOUR_IMAGE_CONTENT)
         val request = object : StringRequest(
-            Request.Method.POST,
+            Method.POST,
             url,
             Response.Listener { response ->
                 // handle successful response

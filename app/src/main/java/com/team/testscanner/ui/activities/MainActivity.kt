@@ -100,9 +100,6 @@ class MainActivity : AppCompatActivity() {
         // Replace the current fragment with the new fragment
         transaction.replace(R.id.my_fragment, fragment)
 
-        // Add the transaction to the back stack
-        transaction.addToBackStack(null)
-
         // Commit the transaction
         transaction.commit()
     }
