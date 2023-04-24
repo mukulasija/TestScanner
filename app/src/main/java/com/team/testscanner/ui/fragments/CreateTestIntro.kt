@@ -5,6 +5,7 @@ import android.Manifest.permission.*
 import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import kotlinx.coroutines.async
 import android.graphics.Bitmap
@@ -47,7 +48,7 @@ import org.json.JSONObject
 import java.io.*
 import androidx.camera.core.Preview
 import com.google.firebase.storage.FirebaseStorage
-
+import com.team.testscanner.ui.activities.MainActivity
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -260,6 +261,9 @@ class CreateTestIntro : Fragment() {
             newQuizRef.set(quiz)
                 .addOnSuccessListener {
                     Toast.makeText(requireContext(),"Test Created Successfully",Toast.LENGTH_SHORT).show()
+                    val intent = Intent(context,MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
                 }.addOnFailureListener{
                     Toast.makeText(requireContext(),it.toString(),Toast.LENGTH_SHORT).show()
                 }
