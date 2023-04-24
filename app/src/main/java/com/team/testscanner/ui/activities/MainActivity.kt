@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     private var isShowBottomNav = true
 
 
-    lateinit var mGoogleSignInClient: GoogleSignInClient
+ //   lateinit var mGoogleSignInClient: GoogleSignInClient
     // val auth is initialized by lazy
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,9 +61,11 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.fourFragment->{
-                    mGoogleSignInClient.signOut()
+                 //   mGoogleSignInClient.signOut()
+
                     auth = Firebase.auth
                     Firebase.auth.signOut()
+
                     val intent = Intent(this, LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
