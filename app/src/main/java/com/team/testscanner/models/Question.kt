@@ -9,4 +9,5 @@ data class  Question(
 ) {
     constructor(imageUrl: String) : this(imageUrl,10,20,"option1","")
     constructor() : this("sample url",10,20,"option1","")
+    constructor(imageUrl: String,ytop: Int,yend: Int) :this(imageUrl,ytop, yend,"","")
 }
