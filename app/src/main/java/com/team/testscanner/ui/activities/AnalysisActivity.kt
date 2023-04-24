@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -23,24 +22,35 @@ import com.team.testscanner.models.OptionSelector
 import com.team.testscanner.models.Question
 import com.team.testscanner.models.Quiz
 
-class TestScreen : AppCompatActivity() {
+class AnalysisActivity : AppCompatActivity() {
     lateinit var firestore: FirebaseFirestore
     var quizzes : MutableList<Quiz>? = null
     var questions: MutableMap<String, Question>? = null
     var index = 1
     lateinit var btnNext : Button
     lateinit var btnPrevious : Button
-    lateinit var optionSelectorList : MutableList<OptionSelector>
     lateinit var btnSubmit : Button
+    val optionSelector = OptionSelector()
+    lateinit var optionSelectorList : MutableList<OptionSelector>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_test_screen)
-         btnPrevious = findViewById<Button>(R.id.btnPrevious)
-         btnNext = findViewById<Button>(R.id.btnNext)
-         btnSubmit = findViewById<Button>(R.id.btnSubmit)
+        setContentView(R.layout.activity_analysis)
+        btnPrevious = findViewById<Button>(R.id.btnPreviousAk)
+        btnNext = findViewById<Button>(R.id.btnNextAk)
+        btnSubmit = findViewById<Button>(R.id.btnSubmitAk)
+//        setupQuiz()
         setUpFirestore()
         setUpEventListener()
     }
+
+    private fun setupQuiz() {
+        val quizData = intent.getStringExtra("QUIZ")
+        val quiz = Gson().fromJson<Quiz>(quizData, Quiz::class.java)
+        quizzes = mutableListOf(quiz)
+        questions = quizzes!![0].questions
+        optionSelectorList = MutableList(questions!!.size) { OptionSelector() }
+    }
+
     private fun setUpEventListener() {
 
         btnPrevious.setOnClickListener {
@@ -54,24 +64,30 @@ class TestScreen : AppCompatActivity() {
         }
 
         btnSubmit.setOnClickListener {
-            updateAttempt()
-            Log.d("FINALQUIZ", questions.toString())
-            val intent = Intent(this, ResultActivity::class.java)
-            val json  = Gson().toJson(quizzes!![0])
-//            Toast.makeText(this,json.toString(),Toast.LENGTH_SHORT).show()
-            intent.putExtra("QUIZ", json)
-            startActivity(intent)
+            updateAnswerKey()
+            addAnswerKeyToFirebase(quizzes!![0])
         }
     }
+    private fun addAnswerKeyToFirebase(quiz : Quiz) {
+        val collectionRef = FirebaseFirestore.getInstance().collection("quizzes")
+        collectionRef.document(quiz.id).set(quiz)
+            .addOnSuccessListener {
+                Toast.makeText(this,"answer key updated successfully",Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finishAffinity()
 
-    private fun updateAttempt() {
+            }.addOnFailureListener {
+                Toast.makeText(this,"Some Error Occurred",Toast.LENGTH_SHORT).show()
+            }
+    }
+    private fun updateAnswerKey() {
         var index = 1
         while(index <= questions!!.size){
-            questions!!["$index"]!!.userAnswer= optionSelectorList[index-1].userAnswer
+            questions!!["$index"]!!.answer= optionSelectorList[index-1].userAnswer
             index=index+1
         }
     }
-
     private fun bindViews() {
         //yet to implement firebase database and delete this dummydatafunction
         btnPrevious.visibility = View.GONE
@@ -89,9 +105,9 @@ class TestScreen : AppCompatActivity() {
             btnPrevious.visibility = View.VISIBLE
             btnNext.visibility = View.VISIBLE
         }
-        val optionList = findViewById<RecyclerView>(R.id.optionList)
+        val optionList = findViewById<RecyclerView>(R.id.optionListAk)
         if(questions!!.size==0){
-            Toast.makeText(this,"No questions in the Test",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,"No questions in the Test", Toast.LENGTH_SHORT).show()
             return
         }
         val question = questions!!["$index"]
@@ -104,38 +120,7 @@ class TestScreen : AppCompatActivity() {
             optionList.setHasFixedSize(true)
         }
     }
-
-    private fun setUpFirestore() {
-        firestore = FirebaseFirestore.getInstance()
-        var id = intent.getStringExtra("id")
-        if (id != null) {
-            firestore.collection("quizzes").whereEqualTo("id",id)
-                .get()
-                .addOnSuccessListener {
-                    if(it != null && !it.isEmpty){
-                        quizzes = it.toObjects(Quiz::class.java)
-                        questions = quizzes!![0].questions
-                        optionSelectorList = MutableList(questions!!.size) { OptionSelector()}
-                        bindViews()
-                    }
-                }
-        }
-    }
-    private fun addDummyData() {
-        questions = mutableMapOf("question1" to Question("https://www.researchgate.net/publication/255640421/figure/fig1/AS:392587958603776@1470611671200/Sample-image-and-its-feature-extraction-results-Left-Original-image-right-segmented.png",300,317,"option2",""))
-//        questions!!.put("question2", questions!!["question1"]!!)
-        val question3 = Question("https://drive.google.com/file/d/140erkr0zjU_Y52GUpxeCcqmkwa_Bx7Qt/view?usp=share_link")
-        questions!!.put("question2", Question("kkk"))
-        questions!!.put("question3",Question("kkdd"))
-        quizzes = mutableListOf(Quiz("1","title", questions!!))
-        firestore = FirebaseFirestore.getInstance()
-        val firebasecollection = firestore.collection("quizzes")
-        firebasecollection.document("quiz1").set(quizzes!![0])
-//        questions = mutableMapOf("question1" to question3)
-    }
-
     private fun setImageWithData(imageUrl: String, ytop: Int, yend: Int) {
-        val imageView = findViewById<ImageView>(R.id.question_Image)
 //        Glide.with(this)
 //            .load(imageUrl)
 //            .into(imageView)
@@ -161,7 +146,7 @@ class TestScreen : AppCompatActivity() {
                     )
 
                     // Set the cropped bitmap to the ImageView
-                    val croppedImageView = findViewById<ImageView>(R.id.question_Image)
+                    val croppedImageView = findViewById<ImageView>(R.id.question_ImageAk)
                     croppedImageView.setImageBitmap(croppedBitmap)
                 }
 
@@ -170,6 +155,20 @@ class TestScreen : AppCompatActivity() {
                 }
             })
     }
-
-
+    private fun setUpFirestore() {
+        firestore = FirebaseFirestore.getInstance()
+        var id = intent.getStringExtra("id")
+        if (id != null) {
+            firestore.collection("quizzes").whereEqualTo("id",id)
+                .get()
+                .addOnSuccessListener {
+                    if(it != null && !it.isEmpty){
+                        quizzes = it.toObjects(Quiz::class.java)
+                        questions = quizzes!![0].questions
+                        optionSelectorList = MutableList(questions!!.size) { OptionSelector() }
+                        bindViews()
+                    }
+                }
+        }
+    }
 }

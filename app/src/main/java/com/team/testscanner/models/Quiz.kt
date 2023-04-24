@@ -1,5 +1,7 @@
 package com.team.testscanner.models
 
+import java.time.Duration
+
 data class Quiz (
     var id : String = "",
     var title: String = "",

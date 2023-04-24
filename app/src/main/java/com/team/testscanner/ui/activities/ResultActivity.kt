@@ -1,5 +1,6 @@
 package com.team.testscanner.ui.activities
 
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -29,7 +30,14 @@ class ResultActivity : AppCompatActivity() {
         addScoreToFirebase()
         val analysisBtn = findViewById<Button>(R.id.viewAnalysis)
         analysisBtn.setOnClickListener {
-
+            val intent = Intent(this, AnalysisActivity::class.java)
+            intent.putExtra("id", quiz.id)
+            this.startActivity(intent)
+//            val intent = Intent(this, AnalysisActivity::class.java)
+//            val json  = Gson().toJson(quiz)
+////            Toast.makeText(this,json.toString(),Toast.LENGTH_SHORT).show()
+//            intent.putExtra("QUIZ", json)
+//            startActivity(intent)
         }
 //        setAnswerView()
     }
