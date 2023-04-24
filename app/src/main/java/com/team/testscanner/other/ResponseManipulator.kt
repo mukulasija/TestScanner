@@ -4,11 +4,12 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import com.google.firebase.firestore.FirebaseFirestore
+import android.widget.Toast
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.team.testscanner.models.Question
-import com.team.testscanner.models.Quiz
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.awaitAll
 import org.json.JSONObject
 import kotlin.math.abs
 
@@ -40,6 +41,7 @@ class ResponseManipulator(private val context: Context, private var response: JS
     data class Previous(var ytop: Int, var ydown: Int)
     data class Start(var description:String,var ytop: Int, var ydown: Int)
     fun main() : MutableList<Question>{
+//        upload()
         val prev = Previous( -100000, -100000 )
         val start=mutableListOf<Start>()
         val gson  = Gson()
@@ -79,10 +81,7 @@ class ResponseManipulator(private val context: Context, private var response: JS
                 questions_start.add(value)
             }
             index=index+1
-            upload()
-
         }
-
 //        for(value in start){
 //            if(value.description[0].isDigit() && value.description[1]=='.' && value.description.length==2){
 //
@@ -103,10 +102,13 @@ class ResponseManipulator(private val context: Context, private var response: JS
             Log.d("manipulator",value.toString())
             print(value)
         }
-
-        while (task_done!=1){
+        upload()
+        while (task_done!=1 || task_done!=-1){
         }
-        getQuestionList()
+        if(task_done!=-1){
+            Toast.makeText(context,"some error occured",Toast.LENGTH_SHORT).show()
+            return mutableListOf()
+        }
         return questionlist
 //        val questionList : MutableList<Question> = getQuestionList(questions_start,questions_end)
 //        return questionList
@@ -143,19 +145,23 @@ class ResponseManipulator(private val context: Context, private var response: JS
         if (imageUri != null) {
             val imageName = imageUri.lastPathSegment
             val imageRef = storageRef.child(imageName!!)
-
             // Upload the image file to Firebase Storage
             imageRef.putFile(imageUri).addOnSuccessListener {
                 // Get the download URL of the image file
                 imageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
+                    Log.d("upload","success")
                     // Store the download URL in Firestore\
                     imageUrl = downloadUrl.toString()
                     task_done=1
+                    getQuestionList()
+                    Toast.makeText(context,"done",Toast.LENGTH_SHORT).show()
                 }
             }.addOnFailureListener { e ->
-                task_done=1
+                task_done=-1
                 // Handle the upload error
                 Log.e(TAG, "Upload failed: ", e)
+                Toast.makeText(context,"failed",Toast.LENGTH_SHORT).show()
+
             }
         }
     }

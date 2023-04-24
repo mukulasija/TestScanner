@@ -5,7 +5,8 @@ data class  Question(
     var ytop : Int,
     var yend : Int,
     var answer: String = "",
-    var userAnswer: String = ""
+    var userAnswer: String = "",
+    var serverAnswer : String = ""
 ) {
     constructor(imageUrl: String) : this(imageUrl,10,20,"option1","")
     constructor() : this("sample url",10,20,"option1","")

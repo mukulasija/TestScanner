@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -30,6 +31,7 @@ class TestScreen : AppCompatActivity() {
     val optionSelector = OptionSelector()
     lateinit var btnNext : Button
     lateinit var btnPrevious : Button
+    lateinit var optionSelectorList : MutableList<OptionSelector>
     lateinit var btnSubmit : Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +58,7 @@ class TestScreen : AppCompatActivity() {
         }
 
         btnSubmit.setOnClickListener {
+            updateAttempt()
             Log.d("FINALQUIZ", questions.toString())
             val intent = Intent(this, ResultActivity::class.java)
             val json  = Gson().toJson(quizzes!![0])
@@ -64,6 +67,15 @@ class TestScreen : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
+    private fun updateAttempt() {
+        var index = 1
+        while(index <= questions!!.size){
+            questions!!["$index"]!!.userAnswer= optionSelectorList[index-1].userAnswer
+            index=index+1
+        }
+    }
+
     private fun bindViews() {
         //yet to implement firebase database and delete this dummydatafunction
         btnPrevious.visibility = View.GONE
@@ -82,9 +94,14 @@ class TestScreen : AppCompatActivity() {
             btnNext.visibility = View.VISIBLE
         }
         val optionList = findViewById<RecyclerView>(R.id.optionList)
-        val question = questions!!["question$index"]
+        if(questions!!.size==0){
+            Toast.makeText(this,"No questions in the Test",Toast.LENGTH_SHORT).show()
+            return
+        }
+        val question = questions!!["$index"]
+        val optionSelector = optionSelectorList[index-1]
         question?.let {
-//            setImageWithData(it.imageUrl,it.ytop,it.yend);
+            setImageWithData(it.imageUrl,it.ytop,it.yend);
             val optionAdapter = OptionAdapter(this, optionSelector,it)
             optionList.layoutManager = LinearLayoutManager(this)
             optionList.adapter = optionAdapter
@@ -102,6 +119,7 @@ class TestScreen : AppCompatActivity() {
                     if(it != null && !it.isEmpty){
                         quizzes = it.toObjects(Quiz::class.java)
                         questions = quizzes!![0].questions
+                        optionSelectorList = MutableList(questions!!.size) { OptionSelector()}
                         bindViews()
                     }
                 }
@@ -122,11 +140,10 @@ class TestScreen : AppCompatActivity() {
 
     private fun setImageWithData(imageUrl: String, ytop: Int, yend: Int) {
         val imageView = findViewById<ImageView>(R.id.question_Image)
-        Glide.with(this)
-            .load(imageUrl)
-            .into(imageView)
-
-        return
+//        Glide.with(this)
+//            .load(imageUrl)
+//            .into(imageView)
+//        return
 
 //
         // Load the image using Glide
