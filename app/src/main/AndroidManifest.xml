@@ -21,6 +21,9 @@
         android:theme="@style/Theme.TestScanner">
 
         <activity
+            android:name=".ui.activities.AnalysisActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.ResultActivity"
             android:exported="false" />
         <activity

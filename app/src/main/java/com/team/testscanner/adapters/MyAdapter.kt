@@ -38,7 +38,7 @@ class MyAdapter(val context : Context, private val quiz:MutableList<Quiz>):Recyc
 
     inner class MyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
         val textTitle:TextView=itemView.findViewById(R.id.test_title_text)
-        val textDesc:TextView=itemView.findViewById(R.id.test_title_desc)
+        val textDesc:TextView=itemView.findViewById(R.id.test_score)
         val startBtn : Button = itemView.findViewById(R.id.start_button)
     }
 
