@@ -48,7 +48,7 @@
         android:layout_margin="10dp"
         android:text="Choose Questions Starting Format"
         android:textSize="20sp"
-        android:textStyle="bold"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/enter_test_title" />
@@ -88,9 +88,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:layout_marginTop="76dp"
-        android:text="Choose One Of the Following"
-        android:textSize="26sp"
-        android:textStyle="bold"
+        android:text="Image Input"
+        android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/choose_question_format" />

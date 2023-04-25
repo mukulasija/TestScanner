@@ -35,10 +35,12 @@ class ResultsAdapter(val context : Context, private val quiz:MutableList<Quiz>):
             intent.putExtra("id",currentItem.id)
             context.startActivity(intent)
         }
-        holder.textScore.text= currentItem.score.toString()
-        if(currentItem.isKeyAvailable==false){
+        val score=currentItem.score
+        holder.textScore.text= "Your Score : $score"
+        if(!currentItem.isKeyAvailable){
             holder.textScore.setTextColor(Color.RED)
             holder.textScore.text="Please Add answer key"
+            holder.resultsButton.text="Add Key"
         }
     }
 
