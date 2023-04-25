@@ -1,5 +1,6 @@
 package com.team.testscanner.ui.fragments
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -125,6 +126,8 @@ class AnalyticsFragment : Fragment() {
             values.add(BarEntry(x, y))
         }
         val set1 = BarDataSet(values, "Marks")
+        val colors = mutableListOf(R.color.blue_primary, R.color.backgroundcolor, R.color.teal_700)
+        set1.colors = colors
         val dataSets: ArrayList<IBarDataSet> = ArrayList()
         dataSets.add(set1)
         return BarData(dataSets)
@@ -135,6 +138,7 @@ class AnalyticsFragment : Fragment() {
         setUpFireStore()
         setupScore()
         mBarChart = view.findViewById(R.id.barChart)
+//        mBarChart.legend.isEnabled = false
 
     }
 
@@ -151,14 +155,20 @@ class AnalyticsFragment : Fragment() {
         mBarChart.description.isEnabled = false
         mBarChart.setDrawValueAboveBar(false)
         val xAxis: XAxis = mBarChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
         val axisLeft: YAxis = mBarChart.axisLeft
-        axisLeft.granularity = 10f
+      //  axisLeft.axisMaximum = 8f
+        xAxis.setDrawGridLines(false);
+        xAxis.setDrawAxisLine(false);
+
         axisLeft.axisMinimum = 0f
+        axisLeft.granularity = 1f
 
         val axisRight: YAxis = mBarChart.axisRight
-        axisRight.granularity = 10f
+        axisRight.granularity = 1f
         axisRight.axisMinimum = 0f
-        axisRight.axisMaximum=100f
+     //   axisRight.axisMaximum=8f
+//        axisRight.axisMaximum=100f
         mBarChart.data = data;
         mBarChart.invalidate();
     }

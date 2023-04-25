@@ -37,6 +37,8 @@ class ResultsAdapter(val context : Context, private val quiz:MutableList<Quiz>):
         }
         val score=currentItem.score
         holder.textScore.text= "Your Score : $score"
+        holder.textScore.setTextColor(Color.BLACK)
+        holder.resultsButton.text="Results"
         if(!currentItem.isKeyAvailable){
             holder.textScore.setTextColor(Color.RED)
             holder.textScore.text="Please Add answer key"
