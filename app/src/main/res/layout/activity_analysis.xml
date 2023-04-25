@@ -6,6 +6,61 @@
     android:layout_height="match_parent"
     tools:context=".ui.activities.AnalysisActivity">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#7BC4FF"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/first_constraint_layout_AK"
+        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/test_scanner_text_AK"
+            android:text="TestScanner"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="10dp"
+            android:textSize="20sp"/>
+
+        <Button
+            android:id="@+id/btnSubmitAk"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/blue_primary"
+            app:cornerRadius="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:background="@color/blue_primary"
+        android:id="@+id/app_bar_layout_AK"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/first_constraint_layout_AK"
+        app:layout_constraintStart_toStartOf="parent">
+
+    <TextView
+        android:id="@+id/tvqNo_AK"
+        android:layout_marginLeft="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:textSize="@dimen/question_bar_text_size"
+        android:text="@string/q_1_single_choice_question"
+        android:textColor="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
     <ImageView
         android:id="@+id/question_ImageAk"
         android:layout_width="match_parent"
@@ -14,7 +69,7 @@
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout_AK" />
 
     <Button
         android:visibility="invisible"
@@ -64,14 +119,4 @@
         app:layout_constraintStart_toStartOf="@+id/question_ImageAk"
         app:layout_constraintTop_toBottomOf="@+id/question_ImageAk" />
 
-    <Button
-        android:visibility="invisible"
-        android:id="@+id/btnSubmitAk"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/guideline"
-        app:layout_constraintRight_toRightOf="parent"  />
 </androidx.constraintlayout.widget.ConstraintLayout>

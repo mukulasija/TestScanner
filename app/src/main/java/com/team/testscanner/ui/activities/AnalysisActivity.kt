@@ -125,14 +125,12 @@ class AnalysisActivity : AppCompatActivity() {
     private fun bindViews() {
         //yet to implement firebase database and delete this dummydatafunction
         btnPrevious.visibility = View.GONE
-        btnSubmit.visibility = View.GONE
         btnNext.visibility = View.GONE
 
         if(index == 1){ //first question
             btnNext.visibility = View.VISIBLE
         }
         else if(index == questions!!.size) { // last question
-            btnSubmit.visibility = View.VISIBLE
             btnPrevious.visibility = View.VISIBLE
         }
         else{ // Middle
