@@ -29,21 +29,31 @@ class ResultsAdapter(val context : Context, private val quiz:MutableList<Quiz>):
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem=quiz[position]
-        holder.textTitle.text=currentItem.title
-        holder.resultsButton.setOnClickListener {
-            val intent = Intent(context,AnalysisActivity::class.java)
-            intent.putExtra("id",currentItem.id)
-            context.startActivity(intent)
-        }
         val score=currentItem.score
+        var red = false
         holder.textScore.text= "Your Score : $score"
         holder.textScore.setTextColor(Color.BLACK)
+        holder.textTitle.text=currentItem.title
         holder.resultsButton.text="Results"
         if(!currentItem.isKeyAvailable){
             holder.textScore.setTextColor(Color.RED)
             holder.textScore.text="Please Add answer key"
             holder.resultsButton.text="Add Key"
+            red=true
         }
+        holder.resultsButton.setOnClickListener {
+            val intent = Intent(context,AnalysisActivity::class.java)
+            intent.putExtra("id",currentItem.id)
+            if(red==true){
+                intent.putExtra("mode","update")
+            }
+            else{
+                intent.putExtra("mode","get")
+            }
+            context.startActivity(intent)
+        }
+
+
     }
 
     override fun getItemCount(): Int {

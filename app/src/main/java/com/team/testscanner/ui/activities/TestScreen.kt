@@ -149,7 +149,7 @@ class TestScreen : AppCompatActivity() {
         question?.let {
             loadBase64ImageWithUrl(it.imageUrl,it.ytop,it.yend)
 //            setImageWithData(it.imageUrl,it.ytop,it.yend);
-            val optionAdapter = OptionAdapter(this, optionSelector,it)
+            val optionAdapter = OptionAdapter(this, optionSelector,it,0)
             optionList.layoutManager = LinearLayoutManager(this)
             optionList.adapter = optionAdapter
             optionList.setHasFixedSize(true)

@@ -10,7 +10,7 @@ import com.team.testscanner.R
 import com.team.testscanner.models.OptionSelector
 import com.team.testscanner.models.Question
 
-class OptionAdapter(val context: Context, val op: OptionSelector, val question: Question) :
+class OptionAdapter(val context: Context, val op: OptionSelector, val question: Question,val mode :Int) :
     RecyclerView.Adapter<OptionAdapter.OptionViewHolder>() {
 
     private var options: List<String> =
@@ -26,17 +26,36 @@ class OptionAdapter(val context: Context, val op: OptionSelector, val question: 
     }
 
     override fun onBindViewHolder(holder: OptionViewHolder, position: Int) {
-        holder.optionView.text = options[position]
-        holder.itemView.setOnClickListener {
-            op.userAnswer = options[position]
-            notifyDataSetChanged()
-        }
-        if (op.userAnswer == options[position]) {
-            holder.itemView.setBackgroundResource(R.drawable.option_item_selected_bg)
-        } else {
+        if(mode==1){
+            holder.optionView.text = options[position]
             holder.itemView.setBackgroundResource(R.drawable.option_item_bg)
+            if(options[position]==question.userAnswer){
+                holder.itemView.setBackgroundResource(R.drawable.option_item_selected_bg)
+            }
+            else{
+                holder.optionView.text=options[position]
+//                holder.itemView.setBackgroundResource(R.drawable.option_item_bg)
+            }
+            if(options[position]==question.answer){
+                    holder.itemView.setBackgroundResource(R.drawable.option_item_green_bg)
+            }
+            else{
+                holder.optionView.text=options[position]
+//                holder.itemView.setBackgroundResource(R.drawable.option_item_bg)
+            }
         }
-
+        else{
+            holder.optionView.text = options[position]
+            holder.itemView.setOnClickListener {
+                op.userAnswer = options[position]
+                notifyDataSetChanged()
+            }
+            if (op.userAnswer == options[position]) {
+                holder.itemView.setBackgroundResource(R.drawable.option_item_selected_bg)
+            } else {
+                holder.itemView.setBackgroundResource(R.drawable.option_item_bg)
+            }
+        }
     }
 
     override fun getItemCount(): Int {

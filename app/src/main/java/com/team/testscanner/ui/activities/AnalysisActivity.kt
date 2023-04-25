@@ -34,6 +34,7 @@ class AnalysisActivity : AppCompatActivity() {
     lateinit var btnPrevious : Button
     lateinit var btnSubmit : Button
     lateinit var questionImageView : ImageView
+    var mode : Int = 0
 //    val optionSelector = OptionSelector()
     lateinit var optionSelectorList : MutableList<OptionSelector>
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +44,13 @@ class AnalysisActivity : AppCompatActivity() {
         btnNext = findViewById<Button>(R.id.btnNextAk)
         btnSubmit = findViewById<Button>(R.id.btnSubmitAk)
         questionImageView = findViewById(R.id.question_ImageAk)
+        val md = intent.getStringExtra("mode")
+        if(md=="update"){
+            mode=0
+        }
+        else{
+            mode=1
+        }
 //        setupQuiz()
         setUpFirestore()
         setUpEventListener()
@@ -69,9 +77,16 @@ class AnalysisActivity : AppCompatActivity() {
         }
 
         btnSubmit.setOnClickListener {
-            updateAnswerKey()
-            calculateScore()
-            addAnswerKeyToFirebase(quizzes!![0])
+            if(mode==1){
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finishAffinity()
+                return@setOnClickListener
+            }else{
+                updateAnswerKey()
+                calculateScore()
+                addAnswerKeyToFirebase(quizzes!![0])
+            }
         }
     }
     private fun addAnswerKeyToFirebase(quiz : Quiz) {
@@ -134,7 +149,7 @@ class AnalysisActivity : AppCompatActivity() {
         question?.let {
 //            setImageWithData(it.imageUrl,it.ytop,it.yend);
             loadBase64ImageWithUrl(it.imageUrl,it.ytop,it.yend)
-            val optionAdapter = OptionAdapter(this, optionSelector,it)
+            val optionAdapter = OptionAdapter(this, optionSelector,it,mode)
             optionList.layoutManager = LinearLayoutManager(this)
             optionList.adapter = optionAdapter
             optionList.setHasFixedSize(true)
