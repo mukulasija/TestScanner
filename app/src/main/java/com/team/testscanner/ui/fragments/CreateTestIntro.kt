@@ -110,7 +110,6 @@ class CreateTestIntro : Fragment() {
         val view = inflater.inflate(R.layout.fragment_create_test_intro, container, false)
         viewFinder=view.findViewById(R.id.viewFinder)
         galleryButton = view.findViewById(R.id.button_gallery)
-        val imagesCount=view.findViewById<TextView>(R.id.show_images_count)
         timePicker = view.findViewById(R.id.timer_picker)
         setinitTime(timePicker)
         radioGroup = view.findViewById(R.id.choose_question_format)
@@ -118,7 +117,6 @@ class CreateTestIntro : Fragment() {
         galleryButton.setOnClickListener {
             Log.i("TAG", "CLICKING ON THE BUTTON")
             openGallery()
-            imagesCount.text = updateSelectedImageCount().toString()
             Log.d("PhotoPicker", "image count: ${imageUris.size}")
         }
         outputDirectory = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
@@ -154,9 +152,7 @@ class CreateTestIntro : Fragment() {
         val selectedId = radioGroup.checkedRadioButtonId
         return when (selectedId) {
             R.id.radio_numeric -> "1"
-            R.id.radio_numeric_dot -> "1."
             R.id.radio_Q -> "Q"
-            R.id.radio_Question -> "Question"
             else -> "" // Return empty string if no radio button is selected
         }
     }

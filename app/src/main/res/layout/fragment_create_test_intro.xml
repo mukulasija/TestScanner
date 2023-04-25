@@ -45,10 +45,10 @@
         android:id="@+id/choose_question_format_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="14dp"
         android:text="Choose Questions Starting Format"
         android:textSize="20sp"
-
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/enter_test_title" />
@@ -59,114 +59,84 @@
         android:id="@+id/choose_question_format"
         app:layout_constraintTop_toBottomOf="@id/choose_question_format_text"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="10dp">
+        android:layout_margin="14dp">
         <RadioButton
             android:id="@+id/radio_numeric"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Numeric (1)"/>
         <RadioButton
-            android:id="@+id/radio_numeric_dot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Numeric (1.)"/>
-        <RadioButton
             android:id="@+id/radio_Q"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Question (Q)"/>
-        <RadioButton
-            android:id="@+id/radio_Question"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Question (Question)"/>
     </RadioGroup>
 
     <TextView
         android:id="@+id/text_select_way"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginTop="76dp"
-        android:text="Image Input"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="22dp"
+        android:text="Image "
+        android:textStyle="bold"
         android:textSize="22sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/choose_question_format" />
+
+    <TextView
+        android:id="@+id/text_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:text="Duration"
+        android:textSize="22sp"
+        android:layout_marginStart="22dp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/choose_question_format" />
 
     <TimePicker
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_duration"
+        app:layout_constraintLeft_toLeftOf="@id/button_gallery"
+        app:layout_constraintRight_toRightOf="@id/button_gallery"
+        app:layout_constraintBottom_toBottomOf="@id/text_duration"
         android:id="@+id/timer_picker"
-        android:layout_width="wrap_content"
-
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="140dp"
         android:timePickerMode="spinner"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_gravity="center_horizontal"/>
-    <Button
-        android:id="@+id/button_camera"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="10dp"
-        android:text="camera"
-        app:cornerRadius="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_select_way" />
 
     <Button
         android:id="@+id/button_gallery"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="10dp"
         android:text="Gallery"
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_camera" />
+        app:layout_constraintHorizontal_bias="0.811"
+        app:layout_constraintStart_toStartOf="@id/text_select_way"
+        app:layout_constraintTop_toBottomOf="@id/choose_question_format" />
 
     <Button
         android:id="@+id/button_submit_test_intro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="60dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="100dp"
         android:text="Submit"
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_gallery"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_duration"
         tools:layout_editor_absoluteY="545dp" />
 
-    <TextView
-        android:id="@+id/show_images_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/images_count"
-        app:layout_constraintEnd_toEndOf="@id/images_count"
-        android:layout_marginBottom="20dp"
-        android:textSize="20sp"
-        android:text="0"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@id/images_count"/>
 
-    <TextView
-        android:id="@+id/images_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="52dp"
-        android:text="Images Selected"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_gallery" />
 
     <TextureView
         android:id="@+id/viewFinder"
