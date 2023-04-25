@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,6 +37,8 @@ class HomeFragment : Fragment() {
     private var quizList = mutableListOf<Quiz>()
     private lateinit var adapter: MyAdapter
     private lateinit var firestore : FirebaseFirestore
+    private lateinit var homeRecyclerView : RecyclerView
+    private lateinit var loadingPB: ProgressBar
 //    lateinit var textTitle:Array<String>
 //    lateinit var textDesc:Array<String>
 //    lateinit var testData:Array<String>
@@ -50,10 +53,13 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loadingPB = view.findViewById(R.id.idPBLoading)
+        loadingPB.visibility= View.VISIBLE
+        homeRecyclerView = view.findViewById(R.id.home_recyclerView)
 //        dataInitilizate()    //dummy data  //to remove it after
         adapter = MyAdapter(requireContext(),quizList)
-        setUpFireStore()
         setUpRecyclerView(view)
+        setUpFireStore()
     }
 
     private fun setUpRecyclerView(view : View){
@@ -103,6 +109,8 @@ class HomeFragment : Fragment() {
             quizList.clear()
             quizList.addAll(value.toObjects(Quiz::class.java))
             adapter.notifyDataSetChanged()
+            loadingPB.visibility=View.GONE
+            homeRecyclerView.visibility=View.VISIBLE
         }
     }
 

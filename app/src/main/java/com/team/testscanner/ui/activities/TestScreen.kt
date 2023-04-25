@@ -10,10 +10,7 @@ import android.os.CountDownTimer
 import android.util.Base64
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -40,15 +37,20 @@ class TestScreen : AppCompatActivity() {
     lateinit var questionImageView : ImageView
     lateinit var tvTimer : TextView
     lateinit var timer : CountDownTimer
+    lateinit var tvqNo : TextView
+    private lateinit var loadingPB: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test_screen)
          btnPrevious = findViewById<Button>(R.id.btnPrevious)
          btnNext = findViewById<Button>(R.id.btnNext)
          btnSubmit = findViewById<Button>(R.id.btnSubmit)
+        loadingPB = findViewById(R.id.idPBTestLoading)
+        loadingPB.visibility= View.VISIBLE
         questionImageView = findViewById(R.id.question_Image)
         tvTimer = findViewById(R.id.tvTimer)
-
+        tvqNo = findViewById(R.id.tvqNo)
+        questionImageView.visibility=View.GONE
         setUpFirestore()
         setUpEventListener()
     }
@@ -109,12 +111,22 @@ class TestScreen : AppCompatActivity() {
         }
         quizzes!![0].isAttempted=true
     }
-
+    private fun showProgressBar(bol : Boolean){
+        if(bol){
+            questionImageView.visibility=View.GONE
+            loadingPB.visibility=View.VISIBLE
+        }
+        else{
+            questionImageView.visibility=View.VISIBLE
+            loadingPB.visibility=View.GONE
+        }
+    }
     private fun bindViews() {
+
         //yet to implement firebase database and delete this dummydatafunction
         btnPrevious.visibility = View.GONE
         btnNext.visibility = View.GONE
-
+        showProgressBar(true)
         if(index == 1){ //first question
             btnNext.visibility = View.VISIBLE
         }
@@ -131,6 +143,8 @@ class TestScreen : AppCompatActivity() {
             return
         }
         val question = questions!!["$index"]
+        val qno = index
+        tvqNo.text= "Q.$qno Single Choice"
         val optionSelector = optionSelectorList[index-1]
         question?.let {
             loadBase64ImageWithUrl(it.imageUrl,it.ytop,it.yend)
@@ -174,6 +188,7 @@ class TestScreen : AppCompatActivity() {
                                 btnSubmit.callOnClick()
                             }
                         }
+                        showProgressBar(false)
                         timer.start()
                     }
                 }
@@ -205,6 +220,7 @@ class TestScreen : AppCompatActivity() {
         Glide.with(questionImageView)
             .load(croppedBitmap)
             .into(questionImageView)
+        showProgressBar(false)
     }
 
 

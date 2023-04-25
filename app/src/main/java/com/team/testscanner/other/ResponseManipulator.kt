@@ -94,7 +94,7 @@ class ResponseManipulator(private val context: Context, private var response: JS
 
         for (value in questions_end )
         {
-            Log.d("manipulatorStart",value.toString())
+            Log.d("manipulatorEnd",value.toString())
             print(value)
         }
 //        upload()
