@@ -8,10 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Base64
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -34,6 +31,7 @@ class AnalysisActivity : AppCompatActivity() {
     lateinit var btnPrevious : Button
     lateinit var btnSubmit : Button
     lateinit var questionImageView : ImageView
+    private lateinit var loadingPB: ProgressBar
     var mode : Int = 0
 //    val optionSelector = OptionSelector()
     lateinit var optionSelectorList : MutableList<OptionSelector>
@@ -44,6 +42,9 @@ class AnalysisActivity : AppCompatActivity() {
         btnNext = findViewById<Button>(R.id.btnNextAk)
         btnSubmit = findViewById<Button>(R.id.btnSubmitAk)
         questionImageView = findViewById(R.id.question_ImageAk)
+        loadingPB = findViewById(R.id.idPBAnalLoading)
+        loadingPB.visibility= View.VISIBLE
+        questionImageView.visibility=View.GONE
         val md = intent.getStringExtra("mode")
         if(md=="update"){
             mode=0
@@ -83,6 +84,7 @@ class AnalysisActivity : AppCompatActivity() {
                 finishAffinity()
                 return@setOnClickListener
             }else{
+                showProgressBar(true)
                 updateAnswerKey()
                 calculateScore()
                 addAnswerKeyToFirebase(quizzes!![0])
@@ -93,6 +95,7 @@ class AnalysisActivity : AppCompatActivity() {
         val collectionRef = FirebaseFirestore.getInstance().collection("quizzes")
         collectionRef.document(quiz.id).set(quiz)
             .addOnSuccessListener {
+                showProgressBar(false)
                 Toast.makeText(this,"answer key updated successfully",Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
@@ -122,11 +125,21 @@ class AnalysisActivity : AppCompatActivity() {
         }
         quizzes!![0].isKeyAvailable=true
     }
+    private fun showProgressBar(bol : Boolean){
+        if(bol){
+            questionImageView.visibility=View.GONE
+            loadingPB.visibility=View.VISIBLE
+        }
+        else{
+            questionImageView.visibility=View.VISIBLE
+            loadingPB.visibility=View.GONE
+        }
+    }
     private fun bindViews() {
         //yet to implement firebase database and delete this dummydatafunction
         btnPrevious.visibility = View.GONE
         btnNext.visibility = View.GONE
-
+        showProgressBar(true)
         if(index == 1){ //first question
             btnNext.visibility = View.VISIBLE
         }
@@ -167,6 +180,7 @@ class AnalysisActivity : AppCompatActivity() {
         Glide.with(questionImageView)
             .load(croppedBitmap)
             .into(questionImageView)
+        showProgressBar(false)
     }
     private fun setImageWithData(imageUrl: String, ytop: Int, yend: Int) {
 //        Glide.with(this)

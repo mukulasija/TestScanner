@@ -70,8 +70,9 @@ class CreateTestIntro : Fragment() {
     private lateinit var viewFinder:TextureView
     private lateinit var etTitle : TextInputEditText
     private lateinit var timePicker : TimePicker
-    private lateinit var radioButton : Button
     private lateinit var radioGroup: RadioGroup
+    private lateinit var loadingPB: ProgressBar
+    private lateinit var submitButton : Button
 //    private lateinit var fragmentContext: Context
 //    override fun onAttach(context: Context) {
 //        super.onAttach(context)
@@ -130,14 +131,14 @@ class CreateTestIntro : Fragment() {
                 REQUEST_CODE_PERMISSIONS
             )
         }
-
-
+        loadingPB = view.findViewById(R.id.idPBCreateLoading)
         etTitle =view.findViewById(R.id.edit_test_title)
-        val submitButton:Button=view.findViewById(R.id.button_submit_test_intro)
+        submitButton =view.findViewById(R.id.button_submit_test_intro)
         submitButton.setOnClickListener {
             if(!validateFields())
                 return@setOnClickListener
 //            upload(imageUris)
+            showProgressBar(true)
             generate(requireContext())
             return@setOnClickListener
 //            val fragmentManager = requireActivity().supportFragmentManager
@@ -168,9 +169,11 @@ class CreateTestIntro : Fragment() {
             return false
         }
         if(etTitle.text!!.isEmpty()){
+            Toast.makeText(requireContext(),"Test Title is Required",Toast.LENGTH_SHORT).show()
             return false
         }
         if(getSelectedFormat()==""){
+            Toast.makeText(requireContext(),"Select Question Type",Toast.LENGTH_SHORT).show()
             return false
         }
         return true
@@ -224,6 +227,16 @@ class CreateTestIntro : Fragment() {
                 }
             }
         )
+    }
+    private fun showProgressBar(bol : Boolean){
+        if(bol){
+            submitButton.visibility=View.GONE
+            loadingPB.visibility=View.VISIBLE
+        }
+        else{
+            submitButton.visibility=View.GONE
+            loadingPB.visibility=View.GONE
+        }
     }
 
     private fun startCamera() {
@@ -300,15 +313,17 @@ class CreateTestIntro : Fragment() {
             newQuizRef.set(quiz)
                 .addOnSuccessListener {
                     Toast.makeText(requireContext(),"Test Created Successfully",Toast.LENGTH_SHORT).show()
+                    showProgressBar(false)
                     val intent = Intent(context,MainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                 }.addOnFailureListener{
+                    showProgressBar(false)
                     Toast.makeText(requireContext(),it.toString(),Toast.LENGTH_SHORT).show()
                 }
         }.addOnFailureListener { exception ->
+            showProgressBar(false)
             println("Error getting number of documents in collection: $exception")
-
         }
     }
 

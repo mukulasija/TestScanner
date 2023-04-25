@@ -67,6 +67,7 @@ class TestScreen : AppCompatActivity() {
         }
 
         btnSubmit.setOnClickListener {
+            showProgressBar(true)
             updateAttempt()
             calculateScore()
             addResonses(quizzes!![0])
@@ -81,13 +82,20 @@ class TestScreen : AppCompatActivity() {
 //            startActivity(intent)
         }
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        timer.cancel()
+        finish()
+    }
     private fun addResonses(quiz : Quiz) {
         val collectionRef = FirebaseFirestore.getInstance().collection("quizzes")
         collectionRef.document(quiz.id).set(quiz)
             .addOnSuccessListener {
                 Toast.makeText(this,"Result updated successfully",Toast.LENGTH_SHORT).show()
             }.addOnFailureListener {
-                Toast.makeText(this,"Some Error Occurred",Toast.LENGTH_SHORT).show()
+                showProgressBar(false)
+                Toast.makeText(this,"Some Error Occurred, Please Try Again",Toast.LENGTH_SHORT).show()
             }
     }
     private fun calculateScore() {
@@ -168,7 +176,7 @@ class TestScreen : AppCompatActivity() {
                         questions = quizzes!![0].questions
                         optionSelectorList = MutableList(questions!!.size) { OptionSelector()}
                         bindViews()
-                        timer = object : CountDownTimer(quizzes!![0].duration, 1000) {
+                        timer = object : CountDownTimer(quizzes!![0].duration.toLong(), 1000) {
 
                             // Callback function, fired on regular interval
                             override fun onTick(millisUntilFinished: Long) {
