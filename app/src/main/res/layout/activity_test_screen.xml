@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/blue_primary"
+        android:background="#7BC4FF"
         app:layout_constraintStart_toStartOf="parent"
         android:id="@+id/first_constraint_layout"
         app:layout_constraintTop_toTopOf="parent">
@@ -54,6 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center_vertical"
+        android:background="@color/blue_primary"
         android:id="@+id/app_bar_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/first_constraint_layout"

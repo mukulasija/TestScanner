@@ -121,7 +121,6 @@ class CreateTestIntro : Fragment() {
             imagesCount.text = updateSelectedImageCount().toString()
             Log.d("PhotoPicker", "image count: ${imageUris.size}")
         }
-        val cameraButton:Button=view.findViewById(R.id.button_camera)
         outputDirectory = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
 
         if (checkSelfPermission(requireContext(),CAMERA)== PERMISSION_GRANTED) {
@@ -134,14 +133,6 @@ class CreateTestIntro : Fragment() {
             )
         }
 
-        cameraButton.setOnClickListener {
-            Log.i("TAG", "CLICKING ON THE CAMERA BUTTON")
-//            if(checkSelfPermission(requireContext(),CAMERA)!= PERMISSION_GRANTED){
-//                requestPermissionLauncher.launch(CAMERA)
-//            }
-            takePhoto()
-
-        }
 
         etTitle =view.findViewById(R.id.edit_test_title)
         val submitButton:Button=view.findViewById(R.id.button_submit_test_intro)
