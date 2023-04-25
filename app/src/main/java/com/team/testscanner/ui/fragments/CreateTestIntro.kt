@@ -18,10 +18,7 @@ import android.view.LayoutInflater
 import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import android.widget.TimePicker
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -74,6 +71,7 @@ class CreateTestIntro : Fragment() {
     private lateinit var etTitle : TextInputEditText
     private lateinit var timePicker : TimePicker
     private lateinit var radioButton : Button
+    private lateinit var radioGroup: RadioGroup
 //    private lateinit var fragmentContext: Context
 //    override fun onAttach(context: Context) {
 //        super.onAttach(context)
@@ -115,6 +113,7 @@ class CreateTestIntro : Fragment() {
         val imagesCount=view.findViewById<TextView>(R.id.show_images_count)
         timePicker = view.findViewById(R.id.timer_picker)
         setinitTime(timePicker)
+        radioGroup = view.findViewById(R.id.choose_question_format)
 
         galleryButton.setOnClickListener {
             Log.i("TAG", "CLICKING ON THE BUTTON")
@@ -160,6 +159,17 @@ class CreateTestIntro : Fragment() {
         }
         return view
     }
+    fun getSelectedFormat(): String {
+        val selectedId = radioGroup.checkedRadioButtonId
+        return when (selectedId) {
+            R.id.radio_numeric -> "1"
+            R.id.radio_numeric_dot -> "1."
+            R.id.radio_Q -> "Q"
+            R.id.radio_Question -> "Question"
+            else -> "" // Return empty string if no radio button is selected
+        }
+    }
+
 
     private fun validateFields(): Boolean {
         if(imageUris.size==0){
@@ -171,6 +181,9 @@ class CreateTestIntro : Fragment() {
             return false
         }
         if(etTitle.text!!.isEmpty()){
+            return false
+        }
+        if(getSelectedFormat()==""){
             return false
         }
         return true
@@ -435,6 +448,7 @@ class CreateTestIntro : Fragment() {
         val queue= Volley.newRequestQueue(this.context)
         val numRequests : Int = imageUris.size
         val quiz = Quiz()
+        val questionType = getSelectedFormat()
         quiz.duration= getTimePickerTime()
         quiz.title = etTitle.text.toString()
         var questions : MutableMap<String,Question> = mutableMapOf()
@@ -449,7 +463,7 @@ class CreateTestIntro : Fragment() {
                 Response.Listener { response ->
                     // Handle the response here
                     numResponse++
-                    val questionlist = ResponseManipulator(requireContext(),response,YOUR_IMAGE_CONTENT).main()
+                    val questionlist = ResponseManipulator(requireContext(),response,YOUR_IMAGE_CONTENT).main(questionType)
 //                    val questionlist = ResponseManipulator(requireContext(),response,uri).getgetquestionlist()
                     questions.addAllQuestions(questionlist)
                     if(numRequests==numResponse){

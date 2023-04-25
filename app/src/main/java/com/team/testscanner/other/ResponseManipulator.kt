@@ -1,15 +1,9 @@
 package com.team.testscanner.other
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.net.Uri
 import android.util.Log
-import android.widget.Toast
-import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.team.testscanner.models.Question
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.awaitAll
 import org.json.JSONObject
 import kotlin.math.abs
 
@@ -40,7 +34,7 @@ class ResponseManipulator(private val context: Context, private var response: JS
 
     data class Previous(var ytop: Int, var ydown: Int)
     data class Start(var description:String,var ytop: Int, var ydown: Int)
-    fun main() : MutableList<Question>{
+    fun main(questionType: String): MutableList<Question>{
 //        upload()
         val prev = Previous( -100000, -100000 )
         val start=mutableListOf<Start>()
@@ -74,7 +68,8 @@ class ResponseManipulator(private val context: Context, private var response: JS
         for(value in start){
 //            if(value.description[0].isDigit()==true && value.description.length==1){
 //                if(value.description[0].isDigit() && value.description.length==2 && value.description[1]=='.' ){
-            if(value.description[0]=='Q'){
+//            if(value.description[0]=='Q'){
+            if(checkCondition(questionType,value)==true){
                 if(questions_start.size>0){
                     questions_end.add(start[index-1])
                 }
@@ -91,7 +86,7 @@ class ResponseManipulator(private val context: Context, private var response: JS
         print("--------------")
         for (value in questions_start)
         {
-            Log.d("manipulator",value.toString())
+            Log.d("manipulatorStart",value.toString())
             print(value)
         }
         print("--------------")
@@ -99,7 +94,7 @@ class ResponseManipulator(private val context: Context, private var response: JS
 
         for (value in questions_end )
         {
-            Log.d("manipulator",value.toString())
+            Log.d("manipulatorStart",value.toString())
             print(value)
         }
 //        upload()
@@ -108,6 +103,88 @@ class ResponseManipulator(private val context: Context, private var response: JS
 //        val questionList : MutableList<Question> = getQuestionList(questions_start,questions_end)
 //        return questionList
     }
+
+    private fun checkCondition(questionType: String, value: Start,): Any {
+        if(questionType=="1"){
+            if(value.description[0].isDigit()==false){
+                return false
+            }
+            for(ch in value.description){
+                if(ch.isLetter()){
+                    return false
+                }
+            }
+            if(value.description[0].isDigit()==true && value.description.length==1){
+                return true
+            }
+//            for(ch in value.description){
+//                if(ch.isLetter()){
+//                    return false
+//                }
+//            }
+//            if(value.description[0].isDigit()==true){
+//                return true
+//            }
+//            if(value.description[0].isDigit()==false){
+//                return false
+//            }
+//            if(value.description.length==1){
+//                return true
+//            }
+            var fl=0
+            for(ch in value.description){
+                if(fl==1 && ch.isDigit()){
+                    return false
+                }
+                if(ch=='.'){
+                    fl=1
+                }
+            }
+            if(value.description.length==2){
+                if(value.description[1].isDigit()){
+                    return true
+                }
+            }
+            if(value.description[0].isDigit() && value.description.length==2 && value.description[1]=='.' ){return true}
+            if((value.description.length==3 && value.description[1].isDigit() && value.description[2]=='.')){return true}
+        }
+        if(questionType=="1."){
+            if(value.description[0].isLetter()){
+                return false
+            }
+            if(value.description[0].isDigit()==false){
+                return false
+            }
+            if(value.description.length==1){
+                return true
+            }
+            if(value.description[0].isDigit() && value.description.length==2 && value.description[1]=='.' ){return true}
+            for(ch in value.description){
+                if(ch.isLetter()){
+                    return false
+                }
+            }
+            if(value.description[0].isDigit() && value.description.length==2 && value.description[1]=='.' ){return true}
+            if(value.description[0].isDigit() && value.description.length==3 && value.description[1].isDigit() && value.description[2]=='.'){return true}
+        }
+        if(questionType=="Q"){
+            if(value.description[0]=='Q'){
+                return true
+            }
+        }
+        if(questionType=="Question"){
+            if(value.description[0]=='Q' && value.description.length>1 && (value.description[1]=='U' || value.description[1]=='u')){
+                return true
+            }
+        }
+        if(questionType=="question"){
+            if(value.description[0]=='q'){
+                return true
+            }
+        }
+        return false
+    }
+
     private fun getQuestionList() : MutableList<Question>{
         var index = 0
         if(questions_start.size==0){
