@@ -5,12 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.activities.TestScreen">
+    <TextView
+        android:id="@+id/tvTimer"
+        android:text="timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        ></TextView>
     <ImageView
         android:id="@+id/question_Image"
         android:layout_width="match_parent"
         android:layout_height="240dp"
         android:src="@drawable/ic_launcher_background"
         android:padding="10dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

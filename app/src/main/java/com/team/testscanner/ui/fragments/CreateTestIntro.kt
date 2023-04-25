@@ -2,15 +2,14 @@ package com.team.testscanner.ui.fragments
 
 
 import android.Manifest.permission.*
-import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import kotlinx.coroutines.async
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.Base64
@@ -21,9 +20,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.TimePicker
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -32,7 +33,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.fragment.app.Fragment
-import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
@@ -46,9 +46,10 @@ import com.team.testscanner.other.ResponseManipulator
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
-import androidx.camera.core.Preview
 import com.google.firebase.storage.FirebaseStorage
 import com.team.testscanner.ui.activities.MainActivity
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -71,6 +72,8 @@ class CreateTestIntro : Fragment() {
     private val imageFiles = mutableListOf<File>()
     private lateinit var viewFinder:TextureView
     private lateinit var etTitle : TextInputEditText
+    private lateinit var timePicker : TimePicker
+    private lateinit var radioButton : Button
 //    private lateinit var fragmentContext: Context
 //    override fun onAttach(context: Context) {
 //        super.onAttach(context)
@@ -100,6 +103,7 @@ class CreateTestIntro : Fragment() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -109,14 +113,15 @@ class CreateTestIntro : Fragment() {
         viewFinder=view.findViewById(R.id.viewFinder)
         galleryButton = view.findViewById(R.id.button_gallery)
         val imagesCount=view.findViewById<TextView>(R.id.show_images_count)
+        timePicker = view.findViewById(R.id.timer_picker)
+        setinitTime(timePicker)
+
         galleryButton.setOnClickListener {
             Log.i("TAG", "CLICKING ON THE BUTTON")
             openGallery()
             imagesCount.text = updateSelectedImageCount().toString()
             Log.d("PhotoPicker", "image count: ${imageUris.size}")
-
         }
-
         val cameraButton:Button=view.findViewById(R.id.button_camera)
         outputDirectory = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
 
@@ -142,20 +147,54 @@ class CreateTestIntro : Fragment() {
         etTitle =view.findViewById(R.id.edit_test_title)
         val submitButton:Button=view.findViewById(R.id.button_submit_test_intro)
         submitButton.setOnClickListener {
-            if(imageUris.size==0){
-                Toast.makeText(requireContext(),"Please Select Atleast one image",Toast.LENGTH_SHORT).show()
+            if(!validateFields())
                 return@setOnClickListener
-            }
 //            upload(imageUris)
             generate(requireContext())
             return@setOnClickListener
-            val fragmentManager = requireActivity().supportFragmentManager
-            val fragment = HomeFragment()
-            val transaction = fragmentManager.beginTransaction()
-            transaction.replace(R.id.my_fragment, fragment)
-            transaction.commit()
+//            val fragmentManager = requireActivity().supportFragmentManager
+//            val fragment = HomeFragment()
+//            val transaction = fragmentManager.beginTransaction()
+//            transaction.replace(R.id.my_fragment, fragment)
+//            transaction.commit()
         }
         return view
+    }
+
+    private fun validateFields(): Boolean {
+        if(imageUris.size==0){
+            Toast.makeText(requireContext(),"Please Select Atleast one image",Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if(getTimePickerTime()==0L){
+            Toast.makeText(requireContext(),"Please select Test Duration",Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if(etTitle.text!!.isEmpty()){
+            return false
+        }
+        return true
+    }
+
+    private fun getTimePickerTime() : Long{
+        val durationInMillis = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ((timePicker.hour)*60+ timePicker.minute)*60*1000
+        } else {
+            TODO("VERSION.SDK_INT < M")
+        }
+        return durationInMillis.toLong()
+    }
+
+    private fun setinitTime(timePicker: TimePicker) {
+        timePicker.setIs24HourView(true)
+        val formatter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            DateTimeFormatter.ofPattern("HH:mm")
+        } else {
+            TODO("VERSION.SDK_INT < O")
+        }
+        val time = LocalTime.parse("00:00", formatter)
+        timePicker.hour=time.hour
+        timePicker.minute=time.minute
     }
 
     private fun takePhoto() {
@@ -396,6 +435,7 @@ class CreateTestIntro : Fragment() {
         val queue= Volley.newRequestQueue(this.context)
         val numRequests : Int = imageUris.size
         val quiz = Quiz()
+        quiz.duration= getTimePickerTime()
         quiz.title = etTitle.text.toString()
         var questions : MutableMap<String,Question> = mutableMapOf()
         quiz.questions = questions
