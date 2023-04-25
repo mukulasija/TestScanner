@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -25,6 +26,7 @@ import com.team.testscanner.adapters.OptionAdapter
 import com.team.testscanner.models.OptionSelector
 import com.team.testscanner.models.Question
 import com.team.testscanner.models.Quiz
+import java.util.concurrent.TimeUnit
 
 class TestScreen : AppCompatActivity() {
     lateinit var firestore: FirebaseFirestore
@@ -36,6 +38,8 @@ class TestScreen : AppCompatActivity() {
     lateinit var optionSelectorList : MutableList<OptionSelector>
     lateinit var btnSubmit : Button
     lateinit var questionImageView : ImageView
+    lateinit var tvTimer : TextView
+    lateinit var timer : CountDownTimer
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test_screen)
@@ -43,11 +47,13 @@ class TestScreen : AppCompatActivity() {
          btnNext = findViewById<Button>(R.id.btnNext)
          btnSubmit = findViewById<Button>(R.id.btnSubmit)
         questionImageView = findViewById(R.id.question_Image)
+        tvTimer = findViewById(R.id.tvTimer)
+
         setUpFirestore()
         setUpEventListener()
     }
     private fun setUpEventListener() {
-
+//        timer.start()
         btnPrevious.setOnClickListener {
             index--
             bindViews()
@@ -150,6 +156,27 @@ class TestScreen : AppCompatActivity() {
                         questions = quizzes!![0].questions
                         optionSelectorList = MutableList(questions!!.size) { OptionSelector()}
                         bindViews()
+                        timer = object : CountDownTimer(quizzes!![0].duration, 1000) {
+
+                            // Callback function, fired on regular interval
+                            override fun onTick(millisUntilFinished: Long) {
+                                val hours = TimeUnit.MILLISECONDS.toHours(millisUntilFinished)
+                                val minutes = TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) -
+                                        TimeUnit.HOURS.toMinutes(hours)
+                                val seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
+                                        TimeUnit.MINUTES.toSeconds(minutes) -
+                                        TimeUnit.HOURS.toSeconds(hours)
+                                val timerText = String.format("%02d:%02d:%02d", hours, minutes, seconds)
+                                tvTimer.text = timerText
+                            }
+
+                            // Callback function, fired
+                            // when the time is up
+                            override fun onFinish() {
+                                btnSubmit.callOnClick()
+                            }
+                        }
+                        timer.start()
                     }
                 }
         }
