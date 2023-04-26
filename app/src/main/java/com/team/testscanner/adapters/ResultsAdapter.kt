@@ -17,7 +17,7 @@ class ResultsAdapter(val context : Context, private val quiz:MutableList<Quiz>):
 
 
     inner class MyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
-        val textTitle: TextView =itemView.findViewById(R.id.test_title_text)
+        val textTitle: TextView =itemView.findViewById(R.id.test_title_text_preview)
         val textScore: TextView =itemView.findViewById(R.id.test_score)
         val resultsButton : Button = itemView.findViewById(R.id.result_button)
     }

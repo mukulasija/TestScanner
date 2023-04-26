@@ -136,6 +136,18 @@
         android:layout_margin="20dp"
         android:visibility="gone"
         />
+
+    <Button
+        android:id="@+id/btn_submit_high_accuracy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="HighAccuracy"
+        app:cornerRadius="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/button_submit_test_intro"
+        tools:layout_editor_absoluteY="545dp" />
     <Button
         android:id="@+id/button_submit_test_intro"
         android:layout_width="wrap_content"

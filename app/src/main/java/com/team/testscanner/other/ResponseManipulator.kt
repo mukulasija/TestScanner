@@ -3,6 +3,7 @@ package com.team.testscanner.other
 import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
+import com.team.testscanner.models.HighStart
 import com.team.testscanner.models.Question
 import org.json.JSONObject
 import kotlin.math.abs
@@ -58,10 +59,6 @@ class ResponseManipulator(private val context: Context, private var response: JS
 //            println(value)
 
         start.sortBy{it.ytop}
-
-
-
-
         var index:Int=0;
 
 //        format for 1,2,3 ......
@@ -102,6 +99,87 @@ class ResponseManipulator(private val context: Context, private var response: JS
         return questionlist
 //        val questionList : MutableList<Question> = getQuestionList(questions_start,questions_end)
 //        return questionList
+    }
+     fun highAccuracy(questionType: String) : MutableList<HighStart>{
+        val prev = Previous( -100000, -100000 )
+        val start=mutableListOf<Start>()
+        val hstartList = mutableListOf<HighStart>()
+        val gson  = Gson()
+        var new_ytop:Int=0;
+        var new_ydown:Int=0;
+        val texts = response.getJSONArray("responses").getJSONObject(0).getJSONArray("textAnnotations")
+        for(i in 1 until texts.length()){
+            val textJson = texts.getJSONObject(i)
+            val text = gson.fromJson(textJson.toString(),MyObject::class.java)
+            new_ytop = text.boundingPoly.vertices[0].y
+            new_ydown = text.boundingPoly.vertices[2].y
+            if (!(abs(prev.ytop - new_ytop)<= 10 && abs(prev.ydown - new_ydown)<= 10 )){
+                start.add(Start(text.description,new_ytop,new_ydown))
+                prev.ytop = new_ytop
+                prev.ydown = new_ydown
+            }
+        }
+
+
+//        for (value in start)
+//            println(value)
+
+        start.sortBy{it.ytop}
+        var index:Int=0;
+
+//        format for 1,2,3 ......
+        for(value in start){
+//            if(value.description[0].isDigit()==true && value.description.length==1){
+//                if(value.description[0].isDigit() && value.description.length==2 && value.description[1]=='.' ){
+//            if(value.description[0]=='Q'){
+            if(checkCondition(questionType,value)==true){
+                hstartList.add(HighStart(value.description,value.ytop,value.ydown,true))
+                if(questions_start.size>0){
+                    questions_end.add(start[index-1])
+                }
+                questions_start.add(value)
+            }
+            else{
+                hstartList.add(HighStart(value.description,value.ytop,value.ydown,false))
+            }
+            index=index+1
+        }
+         for(value in hstartList){
+             Log.d("hstart",value.toString())
+         }
+//        val istart = start
+//        for (start in istart) {
+//            if (questions_start.contains(start)) {
+//                println("${start} is present in questionstart list")
+//            } else {
+//                println("${start} is not present in questionstart list")
+//            }
+//        }
+
+//        for(value in start){
+//            if(value.description[0].isDigit() && value.description[1]=='.' && value.description.length==2){
+//
+//            }
+//        }
+        return hstartList
+//        questions_end.add(start[index-1])
+//        print("--------------")
+//        for (value in questions_start)
+//        {
+//            Log.d("manipulatorStart",value.toString())
+//            print(value)
+//        }
+//        print("--------------")
+//
+//
+//        for (value in questions_end )
+//        {
+//            Log.d("manipulatorEnd",value.toString())
+//            print(value)
+//        }
+////        upload()
+//        getQuestionList()
+//        return questionlist
     }
 
     private fun checkCondition(questionType: String, value: Start,): Any {

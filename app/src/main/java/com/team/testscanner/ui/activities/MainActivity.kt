@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+//        openActivity()   //  comment down just for testing activity
       //  navView = findViewById(R.id.bottomNavigationView)
         val homeFragment = HomeFragment()
         val homeTransaction = supportFragmentManager.beginTransaction()
@@ -89,7 +90,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openActivity() {
-        val intent = Intent(this,TestScreen::class.java)
+        val intent = Intent(this,PreviewActivity::class.java)
         startActivity(intent)
     }
 

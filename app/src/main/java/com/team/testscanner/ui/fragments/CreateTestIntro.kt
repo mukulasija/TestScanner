@@ -44,7 +44,11 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
 import com.google.firebase.storage.FirebaseStorage
+import com.google.gson.Gson
+import com.team.testscanner.models.HighStart
+import com.team.testscanner.models.MyMap
 import com.team.testscanner.ui.activities.MainActivity
+import com.team.testscanner.ui.activities.PreviewActivity
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -73,6 +77,7 @@ class CreateTestIntro : Fragment() {
     private lateinit var radioGroup: RadioGroup
     private lateinit var loadingPB: ProgressBar
     private lateinit var submitButton : Button
+    private lateinit var submitBtnHighAccuracy : Button
 //    private lateinit var fragmentContext: Context
 //    override fun onAttach(context: Context) {
 //        super.onAttach(context)
@@ -134,11 +139,20 @@ class CreateTestIntro : Fragment() {
         loadingPB = view.findViewById(R.id.idPBCreateLoading)
         etTitle =view.findViewById(R.id.edit_test_title)
         submitButton =view.findViewById(R.id.button_submit_test_intro)
+        submitBtnHighAccuracy = view.findViewById(R.id.btn_submit_high_accuracy)
+        submitBtnHighAccuracy.setOnClickListener {
+            if(!validateFields())
+                return@setOnClickListener
+//            upload(imageUris)
+            showProgressBar(true)
+            genHighAccuracy(requireContext())
+        }
         submitButton.setOnClickListener {
             if(!validateFields())
                 return@setOnClickListener
 //            upload(imageUris)
             showProgressBar(true)
+//            genHighAccuracy(requireContext())
             generate(requireContext())
             return@setOnClickListener
 //            val fragmentManager = requireActivity().supportFragmentManager
@@ -445,6 +459,67 @@ class CreateTestIntro : Fragment() {
         }
 
     }
+    private fun genHighAccuracy(context: Context){
+        val url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDZjEOYn_0CMi23uO29JLhThjATi8Qo5MI"
+        val queue= Volley.newRequestQueue(this.context)
+        val numRequests : Int = imageUris.size
+        val quiz = Quiz()
+        val questionType = getSelectedFormat()
+//        val highMap = mutableMapOf<String,List<HighStart>>()
+        quiz.duration= getTimePickerTime()
+        quiz.title = etTitle.text.toString()
+//        var questions : MutableMap<String,Question> = mutableMapOf()
+//        quiz.questions = questions
+        var numResponse = 0
+        for(uri in imageUris){
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            val YOUR_IMAGE_CONTENT = bitmapToBase64(bitmap)
+            val jsonRequest : JSONObject = getJsonImageObject(YOUR_IMAGE_CONTENT)
+            val jsonObjectRequest = object : JsonObjectRequest(Method.POST, url, jsonRequest,
+                Response.Listener { response ->
+                    // Handle the response here
+                    numResponse++
+                    val highStartList = ResponseManipulator(requireContext(),response,YOUR_IMAGE_CONTENT).highAccuracy(questionType)
+//                    val questionlist = ResponseManipulator(requireContext(),response,YOUR_IMAGE_CONTENT).main(questionType)
+                    MyMap.myMap.put(YOUR_IMAGE_CONTENT,highStartList)
+//                    val questionlist = ResponseManipulator(requireContext(),response,uri).getgetquestionlist()
+//                    questions.addAllQuestions(questionlist)
+                    if(numRequests==numResponse){
+//                        Toast.makeText(context,"$numRequests",Toast.LENGTH_SHORT).show()
+                        showPreview(quiz)
+//                        quiz.questions= questions
+//                        addQuizToFireStore(quiz,questions)
+                    }
+//                    Log.d("visionApi",response.getString("textAnnotations"))
+                },
+                Response.ErrorListener { error ->
+                    // Handle the error here
+                    Log.d("visionerror",error.toString())
+                    error
+                }) {
+
+                // Override the getHeaders() method to add custom headers to the request
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = HashMap<String, String>()
+                    headers["Content-Type"] = "application/json"
+                    return headers
+                }
+            }
+            queue.add(jsonObjectRequest)
+        }
+
+    }
+
+    private fun showPreview(quiz: Quiz) {
+        val intent = Intent(context,PreviewActivity::class.java)
+//        val json  = Gson().toJson(quiz)
+        intent.putExtra("quizTitle",quiz.title)
+        intent.putExtra("quizDuration",quiz.duration)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
+
     private fun generate(context: Context){
         val url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDZjEOYn_0CMi23uO29JLhThjATi8Qo5MI"
         val queue= Volley.newRequestQueue(this.context)

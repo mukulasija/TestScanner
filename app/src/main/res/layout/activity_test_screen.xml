@@ -99,7 +99,7 @@
 
     <Button
         android:visibility="invisible"
-        android:id="@+id/btnPrevious"
+        android:id="@+id/btnPrev"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
