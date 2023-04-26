@@ -2,19 +2,16 @@ package com.team.testscanner.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.gson.Gson
 import com.team.testscanner.R
 import com.team.testscanner.adapters.CheckBoxAdapter
-import com.team.testscanner.adapters.MyAdapter
 import com.team.testscanner.models.HighStart
 import com.team.testscanner.models.MyMap
 import com.team.testscanner.models.Question
@@ -26,39 +23,65 @@ class PreviewActivity : AppCompatActivity() {
 //    lateinit var selectedLanguage: BooleanArray
 //    var langArray = arrayOf("Java", "C++", "Kotlin", "C", "Python", "Javascript")
     lateinit var textView : TextView
-    val highMap = MyMap.myMap.toMutableMap()
+
     val questions_start : MutableList<ResponseManipulator.Start> = mutableListOf()
     val questions_end : MutableList<ResponseManipulator.Start> = mutableListOf()
     var questionlist = mutableListOf<Question>()
     var questions : MutableMap<String,Question> = mutableMapOf()
     lateinit var base64ImageString : String
+    lateinit var start: MutableList<HighStart>
     lateinit var quiz : Quiz
     private lateinit var adapter: CheckBoxAdapter
+    private lateinit var prevBtn : Button
+    private lateinit var highMap : MutableMap<String,MutableList<HighStart>>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview)
+        highMap = MyMap.myMap.toMutableMap()
+        Log.d("highMap",MyMap.myMap.size.toString())
         textView = findViewById(R.id.tv_preview);
         MyMap.myMap.clear()
-        val prevBtn : Button = findViewById(R.id.btnPrev)
-        prevBtn.setOnClickListener {
-            process()
-        }
+        prevBtn= findViewById(R.id.btnPrev)
         val quizTitle = intent.getStringExtra("quizTitle")
         val quizDuration = intent.getLongExtra("quizDuration",0L)
         quiz = Quiz()
         quiz.title = quizTitle!!
         quiz.duration = quizDuration
-        if(highMap.size>0){
-            val list : MutableList<HighStart> = highMap.entries.first().value
-            adapter = CheckBoxAdapter(this,list)
-            setUpRecyclerView()
+        bindViews()
+        prevBtn.setOnClickListener {
+            process()
+            bindViews()
         }
     }
 
+    private fun bindViews() {
+        if(highMap.size==0){
+            addQuizToFireStore(quiz)
+            return
+        }
+        if(highMap.size==1){
+            prevBtn.text="Generate Test"
+        }
+        else{
+            prevBtn.text="Next"
+        }
+//        start = highMap.entries.first().value
+//        base64ImageString = highMap.entries.first().key
+//        val firstKey = highMap.keys.first()
+        val firstKey = highMap.keys.first()
+        val firstValue = highMap[firstKey]!!
+        highMap.remove(firstKey)
+        start = firstValue
+        base64ImageString = firstKey
+//        println("First value: $firstValue")
+//        highMap.remove(firstKey)
+        adapter = CheckBoxAdapter(this,start)
+        setUpRecyclerView()
+    }
     private fun process() {
         var index = 0
-        val start = highMap.entries.first().value
-        base64ImageString = highMap.entries.first().key
+//        questions_start.clear()
+//        questions_end.clear()
         for(value in start){
 //            if(value.description[0].isDigit()==true && value.description.length==1){
 //                if(value.description[0].isDigit() && value.description.length==2 && value.description[1]=='.' ){
@@ -79,7 +102,6 @@ class PreviewActivity : AppCompatActivity() {
 //        questionlist.addAll(getQuestionList())
         questions.addAllQuestions(questionlist)
         quiz.questions = questions
-        addQuizToFireStore(quiz)
     }
 
     private fun addQuizToFireStore(quiz: Quiz) {

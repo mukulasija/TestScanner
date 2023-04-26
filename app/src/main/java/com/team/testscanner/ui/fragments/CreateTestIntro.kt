@@ -460,6 +460,7 @@ class CreateTestIntro : Fragment() {
 
     }
     private fun genHighAccuracy(context: Context){
+        MyMap.myMap.clear()
         val url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDZjEOYn_0CMi23uO29JLhThjATi8Qo5MI"
         val queue= Volley.newRequestQueue(this.context)
         val numRequests : Int = imageUris.size
@@ -482,7 +483,6 @@ class CreateTestIntro : Fragment() {
                     numResponse++
                     val highStartList = ResponseManipulator(requireContext(),response,YOUR_IMAGE_CONTENT).highAccuracy(questionType)
 //                    val questionlist = ResponseManipulator(requireContext(),response,YOUR_IMAGE_CONTENT).main(questionType)
-                    MyMap.myMap.put(YOUR_IMAGE_CONTENT,highStartList)
 //                    val questionlist = ResponseManipulator(requireContext(),response,uri).getgetquestionlist()
 //                    questions.addAllQuestions(questionlist)
                     if(numRequests==numResponse){

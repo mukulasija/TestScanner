@@ -3,48 +3,33 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingTop="8dp"
-    android:layout_marginVertical="6dp"
     android:background="@color/white">
-
+<!--    android:paddingTop="1dp"-->
+<!--    android:layout_marginVertical="1dp"-->
     <TextView
         android:id="@+id/test_title_text_preview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:text="Test title"
-        android:textSize="20sp"
-        android:gravity="center_vertical"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="18dp"
-        app:layout_constraintEnd_toEndOf="@id/check_box_preview"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/test_score_temp_preview"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:text="Duration"
-        android:textColorHint="@color/blue_primary"
         android:textSize="10sp"
-        android:layout_marginStart="18dp"
-        app:layout_constraintEnd_toEndOf="@id/check_box_preview"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/test_title_text_preview" />
+        android:gravity="center_vertical"
+        android:layout_marginLeft="50dp"
+        app:layout_constraintBottom_toBottomOf="@id/check_box_preview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/check_box_preview"
+        app:layout_constraintTop_toTopOf="@id/check_box_preview" />
 
+<!--    android:layout_marginTop="2dp"-->
+<!--    android:layout_marginBottom="2dp"-->
     <CheckBox
         android:id="@+id/check_box_preview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginEnd="2dp"
         app:cornerRadius="6dp"
         app:layout_constraintBottom_toBottomOf="@id/home_temp_view"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.47" />
 
@@ -54,7 +39,7 @@
         android:layout_height="1dp"
         android:background="#F7FBFA"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/test_score_temp_preview" />
+        app:layout_constraintTop_toBottomOf="@id/check_box_preview" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

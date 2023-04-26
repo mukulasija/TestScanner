@@ -4,12 +4,13 @@ import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
 import com.team.testscanner.models.HighStart
+import com.team.testscanner.models.MyMap
 import com.team.testscanner.models.Question
 import org.json.JSONObject
 import kotlin.math.abs
 
 class ResponseManipulator(private val context: Context, private var response: JSONObject,
-                          val base64ImageString: String
+                          base64ImageString: String
 ) {
 //    fun getgetquestionlist(): MutableList<Question> {
 //        return mutableListOf(Question())
@@ -19,6 +20,7 @@ class ResponseManipulator(private val context: Context, private var response: JS
     var imageUrl : String = ""
     var task_done =0
     val questionlist = mutableListOf<Question>()
+    var base64ImageString = base64ImageString
     data class MyObject(
         val description: String,
         val boundingPoly: BoundingPoly
@@ -161,6 +163,7 @@ class ResponseManipulator(private val context: Context, private var response: JS
 //
 //            }
 //        }
+        MyMap.myMap.put(base64ImageString, hstartList)
         return hstartList
 //        questions_end.add(start[index-1])
 //        print("--------------")

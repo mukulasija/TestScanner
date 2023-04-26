@@ -16,7 +16,7 @@ import com.team.testscanner.ui.activities.TestScreen
 
 
 class CheckBoxAdapter(val context : Context, private val hstartList:MutableList<HighStart>): RecyclerView.Adapter<CheckBoxAdapter.CheckViewHolder>() {
-
+    val extraString = "......................................................................................."
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheckViewHolder {
         val itemView= LayoutInflater.from(parent.context).inflate(R.layout.layout_prev_select,parent,false)
         return CheckViewHolder(itemView)
@@ -24,8 +24,7 @@ class CheckBoxAdapter(val context : Context, private val hstartList:MutableList<
 
     override fun onBindViewHolder(holder: CheckViewHolder, position: Int) {
         val currentItem=hstartList[position]
-        holder.textTitle.text=currentItem.description
-        holder.textDesc.text= ""
+        holder.textTitle.text=currentItem.description+extraString
         holder.startCkbox.isChecked = currentItem.tick
         holder.startCkbox.setOnClickListener {
             currentItem.tick= holder.startCkbox.isChecked
@@ -39,7 +38,6 @@ class CheckBoxAdapter(val context : Context, private val hstartList:MutableList<
 
     inner class CheckViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val textTitle: TextView =itemView.findViewById(R.id.test_title_text_preview)
-        val textDesc: TextView =itemView.findViewById(R.id.test_score_temp_preview)
         val startCkbox : CheckBox = itemView.findViewById(R.id.check_box_preview)
     }
 
