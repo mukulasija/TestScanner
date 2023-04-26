@@ -3,6 +3,7 @@ package com.team.testscanner.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -23,10 +24,6 @@ class PreviewActivity : AppCompatActivity() {
 //    lateinit var selectedLanguage: BooleanArray
 //    var langArray = arrayOf("Java", "C++", "Kotlin", "C", "Python", "Javascript")
     lateinit var textView : TextView
-
-    val questions_start : MutableList<ResponseManipulator.Start> = mutableListOf()
-    val questions_end : MutableList<ResponseManipulator.Start> = mutableListOf()
-    var questionlist = mutableListOf<Question>()
     var questions : MutableMap<String,Question> = mutableMapOf()
     lateinit var base64ImageString : String
     lateinit var start: MutableList<HighStart>
@@ -34,6 +31,9 @@ class PreviewActivity : AppCompatActivity() {
     private lateinit var adapter: CheckBoxAdapter
     private lateinit var prevBtn : Button
     private lateinit var highMap : MutableMap<String,MutableList<HighStart>>
+    private var imMap : MutableMap<Int,String> = mutableMapOf()
+    private var imgIndex : String = ""
+    lateinit var recyclerView: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview)
@@ -44,18 +44,42 @@ class PreviewActivity : AppCompatActivity() {
         prevBtn= findViewById(R.id.btnPrev)
         val quizTitle = intent.getStringExtra("quizTitle")
         val quizDuration = intent.getLongExtra("quizDuration",0L)
+        val mode = intent.getIntExtra("previewMode",1)
         quiz = Quiz()
         quiz.title = quizTitle!!
         quiz.duration = quizDuration
+        if(mode==0){
+           recyclerView= findViewById(R.id.prev_recycler)
+            showProgressBar(true)
+        }
         bindViews()
         prevBtn.setOnClickListener {
             process()
             bindViews()
         }
+        if(mode==0){
+            val n = highMap.size
+            for(i in 0..n){
+                prevBtn.callOnClick()
+            }
+        }
+    }
+    private fun showProgressBar(bol : Boolean){
+        if(bol){
+            recyclerView.visibility= View.GONE
+            prevBtn.visibility=View.GONE
+//            loadingPB.visibility= View.VISIBLE
+        }
+        else{
+            recyclerView.visibility= View.VISIBLE
+            prevBtn.visibility=View.VISIBLE
+//            loadingPB.visibility= View.GONE
+        }
     }
 
     private fun bindViews() {
         if(highMap.size==0){
+            prevBtn.isClickable=false
             addQuizToFireStore(quiz)
             return
         }
@@ -73,12 +97,15 @@ class PreviewActivity : AppCompatActivity() {
         highMap.remove(firstKey)
         start = firstValue
         base64ImageString = firstKey
+        imgIndex = imMap.addData(base64ImageString).toString()
 //        println("First value: $firstValue")
 //        highMap.remove(firstKey)
         adapter = CheckBoxAdapter(this,start)
         setUpRecyclerView()
     }
     private fun process() {
+        val questions_start : MutableList<ResponseManipulator.Start> = mutableListOf()
+        val questions_end : MutableList<ResponseManipulator.Start> = mutableListOf()
         var index = 0
 //        questions_start.clear()
 //        questions_end.clear()
@@ -98,7 +125,7 @@ class PreviewActivity : AppCompatActivity() {
         }
         val pval = start[index-1]
         questions_end.add(ResponseManipulator.Start(pval.description,pval.ytop,pval.ydown))
-        questionlist = getQuestionList()
+        val questionlist = getQuestionList(questions_start,questions_end)
 //        questionlist.addAll(getQuestionList())
         questions.addAllQuestions(questionlist)
         quiz.questions = questions
@@ -106,6 +133,9 @@ class PreviewActivity : AppCompatActivity() {
 
     private fun addQuizToFireStore(quiz: Quiz) {
         quiz.questions= questions
+        val stringKeyedMap = imMap.toMapWithStrKeys()
+        Log.d("imageMap",stringKeyedMap.size.toString())
+        quiz.imMap = stringKeyedMap
         val collectionRef = FirebaseFirestore.getInstance().collection("quizzes")
         collectionRef.get().addOnSuccessListener { querySnapshot ->
             val numDocuments = querySnapshot.size()
@@ -119,8 +149,10 @@ class PreviewActivity : AppCompatActivity() {
                     val intent = Intent(this,MainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
+                    finishAffinity()
                 }.addOnFailureListener{
 //                    showProgressBar(false)
+                    prevBtn.isClickable=true
                     Toast.makeText(this,it.toString(), Toast.LENGTH_SHORT).show()
                 }
         }.addOnFailureListener { exception ->
@@ -129,13 +161,17 @@ class PreviewActivity : AppCompatActivity() {
     }
 
 
-    private fun getQuestionList() : MutableList<Question>{
+    private fun getQuestionList(
+        questions_start: MutableList<ResponseManipulator.Start>,
+        questions_end: MutableList<ResponseManipulator.Start>
+    ): MutableList<Question>{
+        var questionlist = mutableListOf<Question>()
         var index = 0
         if(questions_start.size==0){
             return questionlist
         }
         while (index<questions_start.size){
-            questionlist.add(Question(imageUrl = base64ImageString, ytop = questions_start[index].ytop, yend = questions_end[index].ydown))
+            questionlist.add(Question(imageUrl = imgIndex, ytop = questions_start[index].ytop, yend = questions_end[index].ydown))
             index=index+1
         }
         return questionlist
@@ -147,5 +183,21 @@ class PreviewActivity : AppCompatActivity() {
         recyclerView.layoutManager=layoutManager
         recyclerView.adapter=adapter
     }
+    // Define the extension function on MutableMap<Int, String>
+    fun MutableMap<Int, String>.addData(data: String)  : Int{
+        // Get the current max key and increment it by 1
+        val key = this.keys.maxOrNull()?.plus(1) ?: 1
+        // Add the new data with the new key
+        this[key] = data
+        return key
+    }
+    fun <T> Map<Int, T>.toMapWithStrKeys(): MutableMap<String, T> {
+        val result = mutableMapOf<String, T>()
+        for ((key, value) in this) {
+            result[key.toString()] = value
+        }
+        return result
+    }
+
 
 }

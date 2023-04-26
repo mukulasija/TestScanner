@@ -151,9 +151,10 @@ class TestScreen : AppCompatActivity() {
         val question = questions!!["$index"]
         val qno = index
         tvqNo.text= "Q.$qno Single Choice"
+        val imageMap = quizzes!![0].imMap
         val optionSelector = optionSelectorList[index-1]
         question?.let {
-            loadBase64ImageWithUrl(it.imageUrl,it.ytop,it.yend)
+            loadBase64ImageWithUrl(imageMap[it.imageUrl],it.ytop,it.yend)
 //            setImageWithData(it.imageUrl,it.ytop,it.yend);
             val optionAdapter = OptionAdapter(this, optionSelector,it,0)
             optionList.layoutManager = LinearLayoutManager(this)
@@ -212,7 +213,7 @@ class TestScreen : AppCompatActivity() {
         firebasecollection.document("quiz1").set(quizzes!![0])
 //        questions = mutableMapOf("question1" to question3)
     }
-    fun loadBase64ImageWithUrl(base64Image: String, ytop: Int, yend: Int) {
+    fun loadBase64ImageWithUrl(base64Image: String?, ytop: Int, yend: Int) {
         val decodedBytes = Base64.decode(base64Image, Base64.DEFAULT)
         val bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
 

@@ -157,16 +157,17 @@ class AnalysisActivity : AppCompatActivity() {
         }
         val question = questions!!["$index"]
         val optionSelector = optionSelectorList[index-1]
+        val imageMap = quizzes!![0].imMap
         question?.let {
 //            setImageWithData(it.imageUrl,it.ytop,it.yend);
-            loadBase64ImageWithUrl(it.imageUrl,it.ytop,it.yend)
+            loadBase64ImageWithUrl(imageMap[it.imageUrl],it.ytop,it.yend)
             val optionAdapter = OptionAdapter(this, optionSelector,it,mode)
             optionList.layoutManager = LinearLayoutManager(this)
             optionList.adapter = optionAdapter
             optionList.setHasFixedSize(true)
         }
     }
-    fun loadBase64ImageWithUrl(base64Image: String, ytop: Int, yend: Int) {
+    fun loadBase64ImageWithUrl(base64Image: String?, ytop: Int, yend: Int) {
         val decodedBytes = Base64.decode(base64Image, Base64.DEFAULT)
         val bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
 

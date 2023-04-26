@@ -145,15 +145,16 @@ class CreateTestIntro : Fragment() {
                 return@setOnClickListener
 //            upload(imageUris)
             showProgressBar(true)
-            genHighAccuracy(requireContext())
+            genHighAccuracy(requireContext(),1)
         }
         submitButton.setOnClickListener {
             if(!validateFields())
                 return@setOnClickListener
 //            upload(imageUris)
             showProgressBar(true)
+            genHighAccuracy(requireContext(),0)
 //            genHighAccuracy(requireContext())
-            generate(requireContext())
+//            generate(requireContext())
             return@setOnClickListener
 //            val fragmentManager = requireActivity().supportFragmentManager
 //            val fragment = HomeFragment()
@@ -459,7 +460,7 @@ class CreateTestIntro : Fragment() {
         }
 
     }
-    private fun genHighAccuracy(context: Context){
+    private fun genHighAccuracy(context: Context,mode : Int){
         MyMap.myMap.clear()
         val url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDZjEOYn_0CMi23uO29JLhThjATi8Qo5MI"
         val queue= Volley.newRequestQueue(this.context)
@@ -487,7 +488,7 @@ class CreateTestIntro : Fragment() {
 //                    questions.addAllQuestions(questionlist)
                     if(numRequests==numResponse){
 //                        Toast.makeText(context,"$numRequests",Toast.LENGTH_SHORT).show()
-                        showPreview(quiz)
+                        showPreview(quiz,mode)
 //                        quiz.questions= questions
 //                        addQuizToFireStore(quiz,questions)
                     }
@@ -511,11 +512,12 @@ class CreateTestIntro : Fragment() {
 
     }
 
-    private fun showPreview(quiz: Quiz) {
+    private fun showPreview(quiz: Quiz,mode: Int) {
         val intent = Intent(context,PreviewActivity::class.java)
 //        val json  = Gson().toJson(quiz)
         intent.putExtra("quizTitle",quiz.title)
         intent.putExtra("quizDuration",quiz.duration)
+        intent.putExtra("previewMode",mode)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }

@@ -10,7 +10,8 @@ data class Quiz (
     var marksPerQuestion : Int =1,
     var score : Int =0,
     var isKeyAvailable : Boolean = false,
-    var duration : Long = 3600
+    var duration : Long = 3600,
+    var imMap : MutableMap<String,String> = mutableMapOf()
 ) {
     constructor(id: String, title: String, questions: MutableMap<String, Question>) : this(
         id,
