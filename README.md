@@ -20,11 +20,9 @@ TestScanner App is a powerful and innovative Android application that allows you
 
 ## Screenshots
 
-![TestScanner App UI 1](screenshots/ui1.png "TestScanner App UI 1")
-![TestScanner App UI 2](screenshots/ui2.png "TestScanner App UI 2")
-![TestScanner App UI 3](screenshots/ui3.png "TestScanner App UI 3")
-![TestScanner App UI 4](screenshots/ui4.png "TestScanner App UI 4")
-![TestScanner App UI 5](screenshots/ui5.png "TestScanner App UI 5")
+|| ![TestScanner App UI 1](screenshots/ui1.png "TestScanner App UI 1") | ![TestScanner App UI 2](screenshots/ui2.png "TestScanner App UI 2")||
+|| ![TestScanner App UI 3](screenshots/ui3.png "TestScanner App UI 3") | ![TestScanner App UI 4](screenshots/ui4.png "TestScanner App UI 4")||
+|| ![TestScanner App UI 5](screenshots/ui5.png "TestScanner App UI 5") | ![TestScanner App UI 5](screenshots/ui6.png "TestScanner App UI 6")||
 
 ## Compatibility
 
