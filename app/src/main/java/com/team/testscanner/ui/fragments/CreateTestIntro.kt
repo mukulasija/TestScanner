@@ -51,6 +51,7 @@ import com.team.testscanner.ui.activities.MainActivity
 import com.team.testscanner.ui.activities.PreviewActivity
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Properties
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -460,9 +461,24 @@ class CreateTestIntro : Fragment() {
         }
 
     }
+    private fun readApiKey(): String {
+        val configFile = "config.properties"
+        val properties = Properties()
+
+        try {
+            val inputStream = FileInputStream(configFile)
+            properties.load(inputStream)
+            inputStream.close()
+        } catch (e: Exception) {
+            // Handle exceptions
+        }
+
+        return properties.getProperty("API_KEY", "")
+    }
     private fun genHighAccuracy(context: Context,mode : Int){
         MyMap.myMap.clear()
-        val url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDZjEOYn_0CMi23uO29JLhThjATi8Qo5MI"
+        val key = readApiKey()
+        val url = "https://vision.googleapis.com/v1/images:annotate?key={$key}"
         val queue= Volley.newRequestQueue(this.context)
         val numRequests : Int = imageUris.size
         val quiz = Quiz()
