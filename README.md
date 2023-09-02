@@ -61,8 +61,7 @@ TestScanner App is the ultimate solution for anyone who wants to save time and e
 - [x] Response Manipulation
 - [x] Test Screen
 - [X] Firestore
-- [ ] Settings
 - [X] Authentication
-- [ ] Camera Multiple Images
+- [X] Camera Multiple Images
 - [x] Images Preview
 
