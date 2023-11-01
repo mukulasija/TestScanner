@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/card_add_test"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="12dp"
+    android:clickable="true"
+    android:backgroundTint="@color/colorEditTextBorderColor"
+    android:focusable="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?listPreferredItemHeight"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        tools:ignore="Overdraw, RTLHardcoded">
+
+        <androidx.constraintlayout.utils.widget.ImageFilterButton
+            android:id="@+id/btnClassroomMenu"
+            android:background="@drawable/ic_baseline_repeat_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="14dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <androidx.constraintlayout.utils.widget.ImageFilterButton
+            android:id="@+id/icClassroomAddTest"
+            android:background="@drawable/ic_laptop_chromebook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+
+
+        <TextView
+            android:id="@+id/tvClassroomName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:layout_marginStart="16dp"
+            android:text="Share With your class"
+            android:textColor="#838383"
+            android:layout_marginLeft="5dp"
+            app:layout_constraintBottom_toBottomOf="@id/icClassroomAddTest"
+            app:layout_constraintLeft_toRightOf="@id/icClassroomAddTest"
+            app:layout_constraintTop_toTopOf="@id/icClassroomAddTest"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

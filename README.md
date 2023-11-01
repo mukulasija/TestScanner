@@ -1,4 +1,4 @@
-# TestScanner App
+`# TestScanner App
 
 <img src="https://user-images.githubusercontent.com/78532621/234663571-d292cbec-7ba3-4934-9938-fe6d0080972b.png" width="800" alt="Mybridge"></a>
 
@@ -6,7 +6,7 @@ TestScanner App is a powerful and innovative Android application that allows you
 
 ## Features
 
-* **Easy Scan:** TestScanner App makes it easy to scan your paper-based MCQ tests using your Android device. Simply open the app, select the scan option, and snap a picture of your test paper. The app will automatically recognize the test questions and options using the Google Vision API.
+*` **Easy Scan:** TestScanner App makes it easy to scan your paper-based MCQ tests using your Android device. Simply open the app, select the scan option, and snap a picture of your test paper. The app will automatically recognize the test questions and options using the Google Vision API.
 
 * **Online Test:** With TestScanner App, you can easily convert your paper-based MCQ test into an online mobile-based test. The app provides you with an intuitive interface that allows you to customize your test, set a timer, and create an answer key.
 
