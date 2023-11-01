@@ -13,6 +13,8 @@ data class Quiz (
     var duration : Long = 3600,
     var imMap : MutableMap<String,String> = mutableMapOf()
 ) {
+    companion object{
+    }
     constructor(id: String, title: String, questions: MutableMap<String, Question>) : this(
         id,
         title,
