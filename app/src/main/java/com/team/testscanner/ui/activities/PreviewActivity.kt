@@ -29,6 +29,8 @@ class PreviewActivity : AppCompatActivity() {
     lateinit var start: MutableList<HighStart>
     lateinit var quiz : Quiz
     private lateinit var adapter: CheckBoxAdapter
+    private lateinit var classroomId : String
+    private lateinit var studentId : String
     private lateinit var prevBtn : Button
     private lateinit var highMap : MutableMap<String,MutableList<HighStart>>
     private var imMap : MutableMap<Int,String> = mutableMapOf()
@@ -44,6 +46,8 @@ class PreviewActivity : AppCompatActivity() {
         prevBtn= findViewById(R.id.btnPrev)
         val quizTitle = intent.getStringExtra("quizTitle")
         val quizDuration = intent.getLongExtra("quizDuration",0L)
+        classroomId = intent.getStringExtra("classroomId").toString()
+        studentId = intent.getStringExtra("studentId").toString()
         val mode = intent.getIntExtra("previewMode",1)
         quiz = Quiz()
         quiz.title = quizTitle!!
@@ -145,6 +149,9 @@ class PreviewActivity : AppCompatActivity() {
             newQuizRef.set(quiz)
                 .addOnSuccessListener {
                     Toast.makeText(this,"Test Created Successfully", Toast.LENGTH_SHORT).show()
+                    if(classroomId.length>0){
+                        addNewQuizToClassroom(classroomId,quiz.id)
+                    }
 //                    showProgressBar(false)
                     val intent = Intent(this,MainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -159,7 +166,38 @@ class PreviewActivity : AppCompatActivity() {
             println("Error getting number of documents in collection: $exception")
         }
     }
+    fun addNewQuizToClassroom(classroomId: String, newQuizId : String) {
+        val classroomsCollection = FirebaseFirestore.getInstance().collection("Classrooms")
+        val specificClassroomDoc = classroomsCollection.document(classroomId)
 
+        specificClassroomDoc.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val classroomData = documentSnapshot.data
+                    val classroomQuizMap = classroomData?.get("classroomQuizMap") as? MutableMap<String, Any>
+
+                    // Add a new quiz to the classroomQuizMap
+                    classroomQuizMap?.let {
+                        val quizCount = "quiz_${classroomQuizMap.size + 1}" // Generate a new quiz ID
+                        it[quizCount] = newQuizId
+
+                        // Update the classroom document with the updated classroomQuizMap
+                        specificClassroomDoc.update("classroomQuizMap", classroomQuizMap)
+                            .addOnSuccessListener {
+                                println("New quiz added successfully to classroom with ID: $classroomId")
+                            }
+                            .addOnFailureListener { exception ->
+                                println("Error updating classroom document: $exception")
+                            }
+                    }
+                } else {
+                    println("Classroom document with ID: $classroomId does not exist")
+                }
+            }
+            .addOnFailureListener { exception ->
+                println("Error getting classroom document: $exception")
+            }
+    }
 
     private fun getQuestionList(
         questions_start: MutableList<ResponseManipulator.Start>,

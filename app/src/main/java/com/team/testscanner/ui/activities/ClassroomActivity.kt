@@ -1,5 +1,6 @@
 package com.team.testscanner.ui.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -10,6 +11,7 @@ import com.team.testscanner.models.Quiz
 
 class ClassroomActivity : AppCompatActivity() {
     private lateinit var classroomId : String
+    private lateinit var studentId : String
     private lateinit var binding: ActivityClassroomBinding
     private lateinit var db : FirebaseFirestore
     private lateinit var classroomTeacherName : String
@@ -23,7 +25,10 @@ class ClassroomActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         setupFirestore()
         binding.itemAddTest.cardAddTest.setOnClickListener {
-
+            val intent = Intent(this,MainActivity::class.java);
+            intent.putExtra("fragment_tag","create_test_intro")
+            intent.putExtra("classroomId",classroomId)
+            startActivity(intent)
         }
     }
 
