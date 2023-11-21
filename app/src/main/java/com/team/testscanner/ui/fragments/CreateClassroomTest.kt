@@ -64,7 +64,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [CreateTestIntro.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CreateTestIntro(var classroomId : String,var studentId : String) : Fragment() {
+class CreateClassroomTest : Fragment() {
     private lateinit var response : JSONObject
     private lateinit var galleryButton: Button
     private var imageUris: MutableList<Uri> = mutableListOf()
@@ -114,7 +114,7 @@ class CreateTestIntro(var classroomId : String,var studentId : String) : Fragmen
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_create_test_intro, container, false)
+        val view = inflater.inflate(R.layout.fragment_create_classroom_test, container, false)
         viewFinder=view.findViewById(R.id.viewFinder)
         galleryButton = view.findViewById(R.id.button_gallery)
         timePicker = view.findViewById(R.id.timer_picker)
@@ -262,8 +262,8 @@ class CreateTestIntro(var classroomId : String,var studentId : String) : Fragmen
             // Camera provider is now guaranteed to be available
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
-           //  Set up preview use case
-         //   val preview = Preview?.setSurfaceProvider(viewFinder.surfaceProvider)
+            //  Set up preview use case
+            //   val preview = Preview?.setSurfaceProvider(viewFinder.surfaceProvider)
 
 
             // Set up image capture use case
@@ -349,9 +349,9 @@ class CreateTestIntro(var classroomId : String,var studentId : String) : Fragmen
 //            val intent = Intent(Intent.ACTION_GET_CONTENT)
 //            intent.type = PICK_IMAGES
 //            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-           // galleryLauncher.launch("image/*")
+            // galleryLauncher.launch("image/*")
 
-             pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
 
         } else {
             requestPermission()
@@ -361,10 +361,10 @@ class CreateTestIntro(var classroomId : String,var studentId : String) : Fragmen
 
 
     private fun isPermissionGranted(): Boolean {
-            return ContextCompat.checkSelfPermission(
-                requireContext(),
-                READ_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            READ_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestPermission() {
@@ -469,9 +469,8 @@ class CreateTestIntro(var classroomId : String,var studentId : String) : Fragmen
     }
     private fun genHighAccuracy(context: Context,mode : Int){
         MyMap.myMap.clear()
-//        val key = readApiKey()
-        val url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyB-5RM3Pao77g8aWGj5BmieRuipY6J8ST0"
-//        val url = "https://vision.googleapis.com/v1/images:annotate?key={$key}"
+        val key = readApiKey()
+        val url = "https://vision.googleapis.com/v1/images:annotate?key={$key}"
         val queue= Volley.newRequestQueue(this.context)
         val numRequests : Int = imageUris.size
         val quiz = Quiz()
@@ -527,8 +526,6 @@ class CreateTestIntro(var classroomId : String,var studentId : String) : Fragmen
         intent.putExtra("quizTitle",quiz.title)
         intent.putExtra("quizDuration",quiz.duration)
         intent.putExtra("previewMode",mode)
-        intent.putExtra("classroomId",classroomId)
-        intent.putExtra("studentId",studentId)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
@@ -695,12 +692,5 @@ class CreateTestIntro(var classroomId : String,var studentId : String) : Fragmen
             })
         })
         return jsonRequest
-    }
-}
-
-fun MutableMap<String, Question>.addAllQuestions(questions: MutableList<Question>) {
-    val nextKey = (this.keys.mapNotNull { it.toIntOrNull() }.maxOrNull() ?: 0) + 1
-    for ((index, question) in questions.withIndex()) {
-        this[(nextKey + index).toString()] = question
     }
 }

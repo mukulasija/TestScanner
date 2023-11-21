@@ -6,6 +6,6 @@ data class Classroom(
     var classroomSection : String = "",
     var classroomTeacherName : String = "",
     var classroomTeacherEmail : String = "",
-    var classroomQuizMap : MutableMap<String,Quiz> = mutableMapOf()
+    var classroomQuizMap : MutableMap<String,String> = mutableMapOf()
 ) {
 }
