@@ -26,6 +26,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TestScanner">
         <activity
+            android:name=".ui.activities.ResponsesScreen"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.StudentHomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.CreateTestActivity"
             android:exported="false" />
         <activity

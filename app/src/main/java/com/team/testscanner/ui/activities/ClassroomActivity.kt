@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObjects
@@ -27,6 +29,8 @@ class ClassroomActivity : AppCompatActivity() {
     private lateinit var db : FirebaseFirestore
     private lateinit var classroomTeacherName : String
     private lateinit var classroomTeacherEmail : String
+    private lateinit var mode : String
+    private var userEmail : String? = null
     private lateinit var classroomName : String
     private var quizList = mutableListOf<Quiz>()
     private lateinit var myAdapter: MyAdapter
@@ -37,14 +41,22 @@ class ClassroomActivity : AppCompatActivity() {
         setContentView(binding.root)
         classroomId = intent.getStringExtra("classroomId").toString()
         db = FirebaseFirestore.getInstance()
-        myAdapter = MyAdapter(this,quizList)
-        setUpRecyclerView()
+        val auth = FirebaseAuth.getInstance()
+        val currentUser : FirebaseUser? = auth.currentUser
+        if (currentUser != null) {
+            userEmail = currentUser.email.toString()
+            Toast.makeText(this,userEmail.toString(),Toast.LENGTH_LONG).show()
+        }
+        else{
+            Toast.makeText(this,userEmail.toString() + " Email not found, Please update the email id",Toast.LENGTH_LONG).show()
+        }
         setupFirestore()
         binding.itemAddTest.cardAddTest.setOnClickListener {
-            val intent = Intent(this,MainActivity::class.java);
+            val intent = Intent(this,CreateTestActivity::class.java);
             intent.putExtra("fragment_tag","create_test_intro")
             intent.putExtra("classroomId",classroomId)
             startActivity(intent)
+            finish()
         }
 
     }
@@ -89,7 +101,6 @@ class ClassroomActivity : AppCompatActivity() {
                 if (value != null) {
                     Log.d("quiz",value.toObjects(Quiz::class.java).toString())
                 }
-                quizList.clear()
                 quizList.addAll(value!!.toObjects(Quiz::class.java))
                 myAdapter.notifyDataSetChanged()
             }
@@ -97,6 +108,14 @@ class ClassroomActivity : AppCompatActivity() {
     }
 
     private fun setFields() {
+        if(userEmail==classroomTeacherEmail){
+            mode = "teacher"
+        }
+        else{
+            mode = "student"
+        }
+        myAdapter = MyAdapter(this,quizList,mode)
+        setUpRecyclerView()
         binding.classBanner.tvTeacherName.text = classroomTeacherName
         binding.classBanner.tvClassroomName.text = classroomName
     }

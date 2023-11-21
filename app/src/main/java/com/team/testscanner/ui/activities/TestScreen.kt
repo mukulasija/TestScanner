@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Base64
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +36,7 @@ class TestScreen : AppCompatActivity() {
     lateinit var questionImageView : ImageView
     lateinit var tvTimer : TextView
     lateinit var timer : CountDownTimer
+    private lateinit var mode : String
     lateinit var tvqNo : TextView
     private lateinit var loadingPB: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +46,7 @@ class TestScreen : AppCompatActivity() {
          btnNext = findViewById<Button>(R.id.btnNext)
          btnSubmit = findViewById<Button>(R.id.btnSubmit)
         loadingPB = findViewById(R.id.idPBTestLoading)
+        mode = intent.getStringExtra("mode").toString()
         loadingPB.visibility= View.VISIBLE
         questionImageView = findViewById(R.id.question_Image)
         tvTimer = findViewById(R.id.tvTimer)
@@ -65,10 +68,22 @@ class TestScreen : AppCompatActivity() {
         }
 
         btnSubmit.setOnClickListener {
+            if(mode=="teacher"){
+//                Toast.makeText(this,"preview ended",Toast.LENGTH_SHORT).show()
+                super.onBackPressed()
+                timer.cancel()
+                finish()
+            }
+//            Toast.makeText(this,"ended",Toast.LENGTH_SHORT).show()
             showProgressBar(true)
             updateAttempt()
             calculateScore()
-            addResonses(quizzes!![0])
+            if(mode!="teacher"){
+//                Toast.makeText(this,"mode implemented",Toast.LENGTH_SHORT).show()
+                Log.d("mode imp",mode)
+                addResonses(quizzes!![0])
+            }
+//            Toast.makeText(this,"mode implemented",Toast.LENGTH_SHORT).show()
             val intent = Intent(this,MainActivity::class.java)
             startActivity(intent)
             finishAffinity()

@@ -22,6 +22,7 @@ class TeacherHomeActivity : AppCompatActivity() {
     private var userEmail : String? = null
     private lateinit var binding: ActivityTeacherHomeBinding
     private var classroomList = mutableListOf<Classroom>()
+    private var classroomIdList = mutableListOf<String>()
     private lateinit var adapter: ClassroomAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +44,8 @@ class TeacherHomeActivity : AppCompatActivity() {
         else{
             Toast.makeText(this,userEmail.toString() + " Email not found, Please update the email id",Toast.LENGTH_LONG).show()
         }
-        setUpFireStore()
+//        setUpFireStore()
+        fetchDataFromFirestore()
 //        addClassroomToFirestore(newclassroom,quizList)
     }
     private fun setUpRecyclerView(){
@@ -65,6 +67,56 @@ class TeacherHomeActivity : AppCompatActivity() {
     private fun hideProgressBar(){
         binding.idPBLoading.visibility=View.GONE
         binding.rvActivityTeacher.visibility=View.VISIBLE
+    }
+    fun fetchDataFromFirestore() {
+        firestore = FirebaseFirestore.getInstance()
+        val enrollmentsCollection = firestore.collection("Enrollments")
+        classroomIdList.clear()
+//        Toast.makeText(this,"sample",Toast.LENGTH_LONG).show()
+        enrollmentsCollection.whereEqualTo("email", userEmail)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+//                    Toast.makeText(this,querySnapshot.toString(),Toast.LENGTH_LONG).show()
+                    val document = querySnapshot.documents[0] // Assuming only one document is retrieved
+                    val classroomArray = document.get("classrooms") as? List<String>
+                    classroomArray?.forEach { classroomId ->
+                        // Assuming 'classroomId' is the ID of a classroom document
+                        // Fetch the individual classroom data or construct a Classroom object
+                        // Add the classroom to the list
+                        classroomIdList.add(classroomId)
+//                        Toast.makeText(this,classroomId.toString(),Toast.LENGTH_LONG).show()
+
+                    }
+                    searchClassrooms()
+                    // Do something with the updated classroomList
+                    // (e.g., notify an adapter in an Android app)
+                    // adapter.notifyDataSetChanged()
+                } else {
+                    // Document with the given emailId not found
+                    // Handle this case
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Handle exceptions or errors here
+            }
+    }
+    private fun searchClassrooms(){
+        firestore = FirebaseFirestore.getInstance()
+        val collectionReference = firestore.collection("Classrooms")
+        val userEmailId : String = userEmail.toString()
+        Log.d("email",userEmail.toString().trim())
+        for(classroomId in classroomIdList){
+            collectionReference.whereEqualTo("classroomId",classroomId.trim()).addSnapshotListener { value, error ->
+                if(value==null || error!=null){
+                    Toast.makeText(this,"Error fetching data",Toast.LENGTH_SHORT).show()
+                }
+                classroomList.clear()
+                classroomList.addAll(value!!.toObjects(Classroom::class.java))
+                adapter.notifyDataSetChanged()
+                hideProgressBar()
+            }
+        }
     }
     private fun setUpFireStore() {
         firestore = FirebaseFirestore.getInstance()
