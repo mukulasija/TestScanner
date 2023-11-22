@@ -69,7 +69,7 @@
             android:layout_marginBottom="32dp"
             app:endIconMode="password_toggle"
             app:errorEnabled="true"
-            app:layout_constraintBottom_toTopOf="@+id/button_login"
+            app:layout_constraintBottom_toTopOf="@+id/btn_stu_login"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -93,9 +93,22 @@
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="10dp"
-        android:text="@string/button_sign_in"
+        android:text="Teacher Login"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toTopOf="@+id/or_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+    <Button
+        android:id="@+id/btn_stu_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="10dp"
+        android:text="Student Login"
+        app:cornerRadius="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />

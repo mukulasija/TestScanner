@@ -93,23 +93,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/et_class_name"
-        android:layout_margin="20dp"
         android:layout_marginStart="20dp"
-        android:background="@color/colorEditTextBgColor"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
-        android:hint="Section"
+        android:layout_marginBottom="20dp"
+        android:background="@color/colorEditTextBgColor"
+        android:hint="Branch"
         android:padding="16dp" />
 
-<!--    <EditText-->
-<!--        android:id="@+id/et_class_room_name"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_margin="20dp"-->
-<!--        android:layout_below="@id/et_class_section"-->
-<!--        android:background="@color/colorEditTextBgColor"-->
-<!--        android:hint="Room"-->
-<!--        android:padding="16dp" />-->
+    <EditText
+        android:id="@+id/et_class_teacherName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_below="@id/et_class_section"
+        android:background="@color/colorEditTextBgColor"
+        android:hint="Teacher Name"
+        android:padding="16dp" />
 
 <!--    <EditText-->
 <!--        android:id="@+id/et_class_subject"-->

@@ -1,14 +1,20 @@
 package com.team.testscanner.ui.activities
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObjects
@@ -18,15 +24,18 @@ import com.team.testscanner.adapters.MyAdapter
 import com.team.testscanner.databinding.ActivityClassroomBinding
 import com.team.testscanner.models.Classroom
 import com.team.testscanner.models.Quiz
+import com.team.testscanner.utility.MyUtility
 import kotlinx.coroutines.tasks.await
 
 class ClassroomActivity : AppCompatActivity() {
     private lateinit var classroomId : String
-    private lateinit var studentId : String
+    private  var studentId : String = ""
     private lateinit var binding: ActivityClassroomBinding
     private lateinit var db : FirebaseFirestore
     private lateinit var classroomTeacherName : String
     private lateinit var classroomTeacherEmail : String
+    private lateinit var mode : String
+    private var userEmail : String? = null
     private lateinit var classroomName : String
     private var quizList = mutableListOf<Quiz>()
     private lateinit var myAdapter: MyAdapter
@@ -36,15 +45,29 @@ class ClassroomActivity : AppCompatActivity() {
         binding = ActivityClassroomBinding.inflate(layoutInflater)
         setContentView(binding.root)
         classroomId = intent.getStringExtra("classroomId").toString()
+        binding.classBanner.tvClassroomCode.text = classroomId
         db = FirebaseFirestore.getInstance()
-        myAdapter = MyAdapter(this,quizList)
-        setUpRecyclerView()
+        val auth = FirebaseAuth.getInstance()
+        val currentUser : FirebaseUser? = auth.currentUser
+        if (currentUser != null) {
+            userEmail = currentUser.email.toString()
+            studentId = userEmail.toString()
+//            Toast.makeText(this,userEmail.toString(),Toast.LENGTH_LONG).show()
+        }
+        else{
+//            Toast.makeText(this,userEmail.toString() + " Email not found, Please update the email id",Toast.LENGTH_LONG).show()
+        }
         setupFirestore()
+        binding.classBanner.tvClassroomCode.setOnClickListener {
+            MyUtility.copyTextToClipboard(this,classroomId)
+
+        }
         binding.itemAddTest.cardAddTest.setOnClickListener {
-            val intent = Intent(this,MainActivity::class.java);
+            val intent = Intent(this,CreateTestActivity::class.java);
             intent.putExtra("fragment_tag","create_test_intro")
             intent.putExtra("classroomId",classroomId)
             startActivity(intent)
+            finish()
         }
 
     }
@@ -57,7 +80,7 @@ class ClassroomActivity : AppCompatActivity() {
 
     private fun setupFirestore(){
         val classroomDoc = db.collection("Classrooms").document(classroomId)
-        Toast.makeText(this,classroomId.toString(),Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this,classroomId.toString(),Toast.LENGTH_SHORT).show()
         classroomDoc.get()
             .addOnSuccessListener { documentSnapshot ->
                 classroomTeacherName = documentSnapshot.getString("classroomTeacherName") ?: ""
@@ -83,13 +106,12 @@ class ClassroomActivity : AppCompatActivity() {
             Log.d("quizListId",quizId)
             quizCollection.whereEqualTo("id",quizId.trim()).addSnapshotListener { value, error ->
                 if(value==null || error!=null){
-                    Toast.makeText(this,"Error fetching data",Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this,"Error fetching data",Toast.LENGTH_SHORT).show()
                 }
-                Toast.makeText(this,"fetched data",Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this,"fetched data",Toast.LENGTH_SHORT).show()
                 if (value != null) {
                     Log.d("quiz",value.toObjects(Quiz::class.java).toString())
                 }
-                quizList.clear()
                 quizList.addAll(value!!.toObjects(Quiz::class.java))
                 myAdapter.notifyDataSetChanged()
             }
@@ -97,6 +119,14 @@ class ClassroomActivity : AppCompatActivity() {
     }
 
     private fun setFields() {
+        if(userEmail==classroomTeacherEmail){
+            mode = "teacher"
+        }
+        else{
+            mode = "student"
+        }
+        myAdapter = MyAdapter(this,quizList,mode,studentId)
+        setUpRecyclerView()
         binding.classBanner.tvTeacherName.text = classroomTeacherName
         binding.classBanner.tvClassroomName.text = classroomName
     }

@@ -57,7 +57,7 @@ class HomeFragment : Fragment() {
         loadingPB.visibility= View.VISIBLE
         homeRecyclerView = view.findViewById(R.id.home_recyclerView)
 //        dataInitilizate()    //dummy data  //to remove it after
-        adapter = MyAdapter(requireContext(),quizList)
+        adapter = MyAdapter(requireContext(),quizList,"student","")
         setUpRecyclerView(view)
         setUpFireStore()
     }

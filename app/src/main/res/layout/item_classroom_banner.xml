@@ -16,10 +16,25 @@
         android:orientation="horizontal"
         tools:ignore="Overdraw, RTLHardcoded">
 
+        <TextView
+            android:id="@+id/tv_classroomCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/ic_clipboard_copy"
+            android:drawableTint="@color/white"
+            android:textSize="15sp"
+            android:layout_marginStart="10dp"
+            android:text="Classroom Code"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="20dp"/>
 
         <TextView
             android:id="@+id/tvClassroomName"
-            android:layout_width="@dimen/favicon_width"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:layout_marginStart="16dp"
@@ -38,6 +53,8 @@
             app:layout_constraintTop_toBottomOf="@id/tvClassroomName"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginTop="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="10dp"
             android:textColor="@color/white"
             android:text="Pardeep Soni" />
 

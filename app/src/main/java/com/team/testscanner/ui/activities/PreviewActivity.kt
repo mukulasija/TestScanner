@@ -21,16 +21,14 @@ import com.team.testscanner.other.ResponseManipulator
 import com.team.testscanner.ui.fragments.addAllQuestions
 
 class PreviewActivity : AppCompatActivity() {
-//    lateinit var selectedLanguage: BooleanArray
-//    var langArray = arrayOf("Java", "C++", "Kotlin", "C", "Python", "Javascript")
     lateinit var textView : TextView
     var questions : MutableMap<String,Question> = mutableMapOf()
     lateinit var base64ImageString : String
     lateinit var start: MutableList<HighStart>
     lateinit var quiz : Quiz
     private lateinit var adapter: CheckBoxAdapter
-    private lateinit var classroomId : String
-    private lateinit var studentId : String
+    private var classroomId : String = ""
+    private  var studentId : String = ""
     private lateinit var prevBtn : Button
     private lateinit var highMap : MutableMap<String,MutableList<HighStart>>
     private var imMap : MutableMap<Int,String> = mutableMapOf()
@@ -150,13 +148,21 @@ class PreviewActivity : AppCompatActivity() {
                 .addOnSuccessListener {
                     Toast.makeText(this,"Test Created Successfully", Toast.LENGTH_SHORT).show()
                     if(classroomId.length>0){
+                        Toast.makeText(this,"add to classroom", Toast.LENGTH_SHORT).show()
                         addNewQuizToClassroom(classroomId,quiz.id)
                     }
+                    if(studentId.length>0){
+
+                    }
 //                    showProgressBar(false)
-                    val intent = Intent(this,MainActivity::class.java)
+                    var intent = Intent(this,MainActivity::class.java)
+                    if(classroomId.length>0){
+                        intent = Intent(this,ClassroomActivity::class.java)
+                        intent.putExtra("classroomId",classroomId)
+                    }
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
-                    finishAffinity()
+                    finish()
                 }.addOnFailureListener{
 //                    showProgressBar(false)
                     prevBtn.isClickable=true
@@ -185,6 +191,15 @@ class PreviewActivity : AppCompatActivity() {
                         specificClassroomDoc.update("classroomQuizMap", classroomQuizMap)
                             .addOnSuccessListener {
                                 println("New quiz added successfully to classroom with ID: $classroomId")
+                                var intent = Intent(this,ClassroomActivity::class.java)
+                                intent.putExtra("classroomId",classroomId)
+//                                if(classroomId.length>0){
+//                                    intent = Intent(this,ClassroomActivity::class.java)
+//                                    intent.putExtra("classroomId",classroomId)
+//                                }
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
+                                finish()
                             }
                             .addOnFailureListener { exception ->
                                 println("Error updating classroom document: $exception")

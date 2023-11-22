@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         studentId = intent.getStringExtra("studentId").toString()
         val fabButton:FloatingActionButton=findViewById(R.id.fab)
         val homeFragment = HomeFragment()
-        val createClassroomTest = CreateClassroomTest()
         val homeTransaction = supportFragmentManager.beginTransaction()
         val bottomNavigationView:BottomNavigationView = findViewById(R.id.bottomNavigationView)
         homeTransaction.replace(R.id.my_fragment, homeFragment)
