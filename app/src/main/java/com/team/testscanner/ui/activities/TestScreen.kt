@@ -19,6 +19,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.firestore.FirebaseFirestore
 import com.team.testscanner.R
 import com.team.testscanner.adapters.OptionAdapter
+import com.team.testscanner.models.Attempt
 import com.team.testscanner.models.OptionSelector
 import com.team.testscanner.models.Question
 import com.team.testscanner.models.Quiz
@@ -29,6 +30,7 @@ class TestScreen : AppCompatActivity() {
     var quizzes : MutableList<Quiz>? = null
     var questions: MutableMap<String, Question>? = null
     var index = 1
+    private var studentId : String = ""
     lateinit var btnNext : Button
     lateinit var btnPrevious : Button
     lateinit var optionSelectorList : MutableList<OptionSelector>
@@ -38,14 +40,16 @@ class TestScreen : AppCompatActivity() {
     lateinit var timer : CountDownTimer
     private lateinit var mode : String
     lateinit var tvqNo : TextView
+    private var score = 0
     private lateinit var loadingPB: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test_screen)
-         btnPrevious = findViewById<Button>(R.id.btnPrev)
-         btnNext = findViewById<Button>(R.id.btnNext)
-         btnSubmit = findViewById<Button>(R.id.btnSubmit)
+        btnPrevious = findViewById<Button>(R.id.btnPrev)
+        btnNext = findViewById<Button>(R.id.btnNext)
+        btnSubmit = findViewById<Button>(R.id.btnSubmit)
         loadingPB = findViewById(R.id.idPBTestLoading)
+        studentId = intent.getStringExtra("studentId").toString()
         mode = intent.getStringExtra("mode").toString()
         loadingPB.visibility= View.VISIBLE
         questionImageView = findViewById(R.id.question_Image)
@@ -54,6 +58,65 @@ class TestScreen : AppCompatActivity() {
         questionImageView.visibility=View.GONE
         setUpFirestore()
         setUpEventListener()
+    }
+    fun updateStudentAttempt(quizId : String){
+        var selectedOptions : MutableList<String> = mutableListOf()
+        var index = 1
+        while(index <= questions!!.size){
+            selectedOptions.add(optionSelectorList[index-1].userAnswer)
+//            selectedOptions.add(index,optionSelectorList[index-1].userAnswer)
+//            questions!!["$index"]!!.userAnswer= optionSelectorList[index-1].userAnswer
+            index=index+1
+        }
+        quizzes!![0].isAttempted=true
+        if(studentId.length==0){
+            Toast.makeText(this,"can't varify student Id, try again later",Toast.LENGTH_SHORT).show()
+            return
+        }
+        var attempt = Attempt(studentId,studentId,selectedOptions,score)
+        updateStudentAttemptToFirebase(quizId,attempt)
+    }
+    private fun updateStudentAttemptToFirebase(quizId : String, attempt: Attempt){
+        val collectionRef = FirebaseFirestore.getInstance().collection("quizAttempts").document(quizId)
+        collectionRef.update(studentId,attempt)
+            .addOnSuccessListener {
+                Toast.makeText(this,"Result updated successfully",Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+
+            }
+//        collectionRef.get().addOnSuccessListener { documentSnapshot ->
+//            if (documentSnapshot.exists()) {
+//                val data = documentSnapshot.data
+//                if (data != null) {
+//                    val map = data as? MutableMap<String, Attempt>
+//
+//                    // Assuming "your_map_field_name" is the name of your map field in Firestore
+//                    map?.let {
+//                        // Update the value for a specific key in the map
+//                        it[studentId]?.apply {
+//                            // Update the values as needed
+//
+//                        }
+//
+//                        // Update the map field in Firestore
+//                        collectionRef.update("your_map_field_name", map)
+//                            .addOnSuccessListener {
+//                                // Map field updated successfully
+//                            }
+//                            .addOnFailureListener { exception ->
+//                                // Handle the failure to update the map field
+//                            }
+//                    }
+//                }
+//            }
+//        collectionRef.document(quizId).set(attempt)
+//            .addOnSuccessListener {
+//                Toast.makeText(this,"Result updated successfully",Toast.LENGTH_SHORT).show()
+//            }.addOnFailureListener {
+//                showProgressBar(false)
+//                Toast.makeText(this,"Some Error Occurred, Please Try Again",Toast.LENGTH_SHORT).show()
+//            }
     }
     private fun setUpEventListener() {
 //        timer.start()
@@ -69,7 +132,8 @@ class TestScreen : AppCompatActivity() {
 
         btnSubmit.setOnClickListener {
             if(mode=="teacher"){
-//                Toast.makeText(this,"preview ended",Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+                Toast.makeText(this,"preview ended",Toast.LENGTH_SHORT).show()
                 super.onBackPressed()
                 timer.cancel()
                 finish()
@@ -80,8 +144,9 @@ class TestScreen : AppCompatActivity() {
             calculateScore()
             if(mode!="teacher"){
 //                Toast.makeText(this,"mode implemented",Toast.LENGTH_SHORT).show()
+                updateStudentAttempt(quizzes!![0].id)
                 Log.d("mode imp",mode)
-                addResonses(quizzes!![0])
+//                addResponses(quizzes!![0])
             }
 //            Toast.makeText(this,"mode implemented",Toast.LENGTH_SHORT).show()
             val intent = Intent(this,MainActivity::class.java)
@@ -101,7 +166,7 @@ class TestScreen : AppCompatActivity() {
         timer.cancel()
         finish()
     }
-    private fun addResonses(quiz : Quiz) {
+    private fun addResponses(quiz : Quiz) {
         val collectionRef = FirebaseFirestore.getInstance().collection("quizzes")
         collectionRef.document(quiz.id).set(quiz)
             .addOnSuccessListener {
@@ -112,7 +177,7 @@ class TestScreen : AppCompatActivity() {
             }
     }
     private fun calculateScore() {
-        var score = 0
+        score = 0
         for (entry in quizzes!![0].questions.entries) {
             val question = entry.value
             if (question.answer == question.userAnswer) {
@@ -188,7 +253,7 @@ class TestScreen : AppCompatActivity() {
                     if(it != null && !it.isEmpty){
                         quizzes = it.toObjects(Quiz::class.java)
                         questions = quizzes!![0].questions
-                        optionSelectorList = MutableList(questions!!.size) { OptionSelector()}
+                        optionSelectorList = MutableList(questions!!.size) { OptionSelector(userAnswer = "neg")}
                         bindViews()
                         timer = object : CountDownTimer(quizzes!![0].duration.toLong(), 1000) {
 

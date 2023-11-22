@@ -191,6 +191,15 @@ class PreviewActivity : AppCompatActivity() {
                         specificClassroomDoc.update("classroomQuizMap", classroomQuizMap)
                             .addOnSuccessListener {
                                 println("New quiz added successfully to classroom with ID: $classroomId")
+                                var intent = Intent(this,ClassroomActivity::class.java)
+                                intent.putExtra("classroomId",classroomId)
+//                                if(classroomId.length>0){
+//                                    intent = Intent(this,ClassroomActivity::class.java)
+//                                    intent.putExtra("classroomId",classroomId)
+//                                }
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
+                                finish()
                             }
                             .addOnFailureListener { exception ->
                                 println("Error updating classroom document: $exception")

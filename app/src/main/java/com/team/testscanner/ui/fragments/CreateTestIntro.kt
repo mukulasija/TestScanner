@@ -85,7 +85,7 @@ class CreateTestIntro(var classroomId : String,var studentId : String) : Fragmen
 //        fragmentContext = context
 //    }
 
-
+    //TODO add camera functionality
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
             if (uris != null && uris.isNotEmpty()) {

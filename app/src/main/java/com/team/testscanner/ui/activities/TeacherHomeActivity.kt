@@ -86,7 +86,6 @@ class TeacherHomeActivity : AppCompatActivity() {
                         // Add the classroom to the list
                         classroomIdList.add(classroomId)
 //                        Toast.makeText(this,classroomId.toString(),Toast.LENGTH_LONG).show()
-
                     }
                     searchClassrooms()
                     // Do something with the updated classroomList
@@ -106,12 +105,12 @@ class TeacherHomeActivity : AppCompatActivity() {
         val collectionReference = firestore.collection("Classrooms")
         val userEmailId : String = userEmail.toString()
         Log.d("email",userEmail.toString().trim())
+        classroomList.clear()
         for(classroomId in classroomIdList){
             collectionReference.whereEqualTo("classroomId",classroomId.trim()).addSnapshotListener { value, error ->
                 if(value==null || error!=null){
                     Toast.makeText(this,"Error fetching data",Toast.LENGTH_SHORT).show()
                 }
-                classroomList.clear()
                 classroomList.addAll(value!!.toObjects(Classroom::class.java))
                 adapter.notifyDataSetChanged()
                 hideProgressBar()
