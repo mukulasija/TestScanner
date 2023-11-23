@@ -38,7 +38,7 @@ class MyAdapter(val context : Context, private val quiz:MutableList<Quiz>,val mo
             holder.startBtn.text = "See Test Preview"
             holder.itemView.setOnClickListener {
                 val intent = Intent(context, ResponsesScreen::class.java)
-                intent.putExtra("id", quiz[position].id)
+                intent.putExtra("quizId", quiz[position].id)
                 intent.putExtra("mode",mode)
                 context.startActivity(intent)
             }

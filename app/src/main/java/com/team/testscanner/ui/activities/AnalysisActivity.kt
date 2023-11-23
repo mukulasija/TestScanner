@@ -18,6 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.team.testscanner.R
 import com.team.testscanner.adapters.OptionAdapter
+import com.team.testscanner.models.Attempt
 import com.team.testscanner.models.OptionSelector
 import com.team.testscanner.models.Question
 import com.team.testscanner.models.Quiz
@@ -29,6 +30,7 @@ class AnalysisActivity : AppCompatActivity() {
     var index = 1
     lateinit var btnNext : Button
     lateinit var btnPrevious : Button
+    private lateinit var attempt: Attempt
     lateinit var btnSubmit : Button
     lateinit var questionImageView : ImageView
     private lateinit var loadingPB: ProgressBar
@@ -51,6 +53,7 @@ class AnalysisActivity : AppCompatActivity() {
         }
         else{
             mode=1
+            attempt = intent.getSerializableExtra("attemptObject") as Attempt
         }
 //        setupQuiz()
         setUpFirestore()
@@ -79,9 +82,11 @@ class AnalysisActivity : AppCompatActivity() {
 
         btnSubmit.setOnClickListener {
             if(mode==1){
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finishAffinity()
+//                val intent = Intent(this, MainActivity::class.java)
+//                startActivity(intent)
+//                finishAffinity()
+                onBackPressed()
+                finish()
                 return@setOnClickListener
             }else{
                 showProgressBar(true)
@@ -97,6 +102,10 @@ class AnalysisActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 showProgressBar(false)
                 Toast.makeText(this,"answer key updated successfully",Toast.LENGTH_SHORT).show()
+                calculateAttemptScore(quiz)
+                onBackPressed()
+                finish()
+                return@addOnSuccessListener
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finishAffinity()
@@ -105,7 +114,7 @@ class AnalysisActivity : AppCompatActivity() {
                 Toast.makeText(this,"Some Error Occurred",Toast.LENGTH_SHORT).show()
             }
     }
-    private fun calculateScore() {
+    private fun calculateScore() : Int{
         var score = 0
         for (entry in quizzes!![0].questions.entries) {
             val question = entry.value
@@ -115,7 +124,97 @@ class AnalysisActivity : AppCompatActivity() {
         }
 //        val txtScore = findViewById<TextView>(R.id.test_score)
 //        txtScore.text = "Your Score : $score"
-        quizzes!![0].score=score
+//        quizzes!![0].score=score
+        return score
+    }
+    private fun calculateAttemptScore(attempt : Attempt,quiz : Quiz): Int {
+        var score = 0
+        var index = 1
+        while(index <= quiz.questions!!.size){
+            if(attempt.selectedOptions[index-1]==quiz.questions["$index"]!!.answer){
+                score=score+1
+            }
+//            questions!!["$index"]!!.answer= optionSelectorList[index-1].userAnswer
+            index=index+1
+        }
+        return score
+    }
+//    private fun testfunction(quiz: Quiz){
+//        var quizAttemptsCollection = FirebaseFirestore.getInstance().collection("quizAttempts")
+//        var attemptList = mutableListOf<Attempt>()
+//        attemptList.clear()
+//        quizAttemptsCollection.whereEqualTo("quizId",quiz.id)
+//            .get()
+//            .addOnSuccessListener {
+//                val documents = it.documents
+//                if(documents.isEmpty()){
+//                    return@addOnSuccessListener
+//                }
+//                for(document in documents){
+//                    val attemptMap = document.get("attemptList") as List<MutableMap<String,Any>>
+//                    for(item in attemptMap){
+//                        val selectedOptions = item.getValue("selectedOptions") as List<String>
+//                        val score = item.getValue("score").toString()
+//                        val studentId = item.getValue("studentId").toString()
+//                        val studentName = item.getValue("studentName").toString()
+//                        val newAttempt : Attempt = Attempt(score=score.toInt(), studentId = studentId, studentName = studentName, selectedOptions = selectedOptions)
+//                        attemptList.add(newAttempt)
+//                    }
+//                }
+//            }
+//    }
+    private fun calculateAttemptScore(quiz: Quiz){
+        var enrollmentCollection = FirebaseFirestore.getInstance().collection("quizAttempts")
+        enrollmentCollection.whereEqualTo("quizId",quiz.id)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (querySnapshot.documents.isEmpty()) {
+                    return@addOnSuccessListener
+                }
+//                    var document = querySnapshot.documents[0]
+                val documents = querySnapshot.documents
+                val attemptList = mutableListOf<Attempt>()
+                for (document in documents) {
+                    val attemptMap = document.get("attemptList") as List<MutableMap<String, Any>>
+                    for (item in attemptMap) {
+                        val selectedOptions = item.getValue("selectedOptions") as List<String>
+                        val score = item.getValue("score").toString()
+                        val studentId = item.getValue("studentId").toString()
+                        val studentName = item.getValue("studentName").toString()
+                        val newAttempt: Attempt = Attempt(
+                            score = score.toInt(),
+                            studentId = studentId,
+                            studentName = studentName,
+                            selectedOptions = selectedOptions
+                        )
+                        attemptList.add(newAttempt)
+                    }
+//                    val attemptList = document.get("attemptList") as MutableList<Attempt>
+                    for (attempt in attemptList) {
+                        var score = 0
+                        var index = 1
+                        while (index <= quiz.questions!!.size) {
+                            if (attempt.selectedOptions[index - 1] == quiz.questions["$index"]!!.answer) {
+                                score = score + 1
+                            }
+//            questions!!["$index"]!!.answer= optionSelectorList[index-1].userAnswer
+                            index = index + 1
+                        }
+                        attempt.score = score
+//                         calculateAttemptScore(attempt, quiz)
+                    }
+                    document.reference.update("attemptList", attemptList)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "updated Successfully", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+
+                        }
+                }
+            }
+            .addOnFailureListener {
+
+            }
     }
     private fun updateAnswerKey() {
         var index = 1
@@ -228,6 +327,14 @@ class AnalysisActivity : AppCompatActivity() {
                     if(it != null && !it.isEmpty){
                         quizzes = it.toObjects(Quiz::class.java)
                         questions = quizzes!![0].questions
+                        if(mode==1){
+                            var index = 1;
+                            while(index<=attempt.selectedOptions!!.size){
+                                val userAnswer = attempt.selectedOptions[index-1]
+                                questions!!["$index"]!!.userAnswer = userAnswer
+                                index += 1
+                            }
+                        }
                         optionSelectorList = MutableList(questions!!.size) { OptionSelector() }
                         bindViews()
                     }

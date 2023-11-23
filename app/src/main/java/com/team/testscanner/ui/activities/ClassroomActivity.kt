@@ -3,6 +3,7 @@ package com.team.testscanner.ui.activities
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -110,7 +111,7 @@ class ClassroomActivity : AppCompatActivity() {
                 }
 //                Toast.makeText(this,"fetched data",Toast.LENGTH_SHORT).show()
                 if (value != null) {
-                    Log.d("quiz",value.toObjects(Quiz::class.java).toString())
+//                    Log.d("quiz",value.toObjects(Quiz::class.java).toString())
                 }
                 quizList.addAll(value!!.toObjects(Quiz::class.java))
                 myAdapter.notifyDataSetChanged()
@@ -124,6 +125,8 @@ class ClassroomActivity : AppCompatActivity() {
         }
         else{
             mode = "student"
+            binding.itemAddTest.cardAddTest.isClickable=false
+            binding.itemAddTest.cardAddTest.visibility = View.GONE
         }
         myAdapter = MyAdapter(this,quizList,mode,studentId)
         setUpRecyclerView()

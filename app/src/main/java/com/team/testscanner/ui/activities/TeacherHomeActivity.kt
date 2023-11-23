@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import com.team.testscanner.adapters.ClassroomAdapter
 import com.team.testscanner.databinding.ActivityTeacherHomeBinding
 import com.team.testscanner.models.Classroom
@@ -29,6 +31,15 @@ class TeacherHomeActivity : AppCompatActivity() {
         binding = ActivityTeacherHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.rvActivityTeacher
+        binding.appBarClassroom.profileIcon.setOnClickListener {
+            auth = Firebase.auth
+            Firebase.auth.signOut()
+
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
         binding.fabAddClassroom.setOnClickListener {
             val createClassroomIntent = Intent(this,CreateClassroomActivity::class.java)
             startActivity(createClassroomIntent)
