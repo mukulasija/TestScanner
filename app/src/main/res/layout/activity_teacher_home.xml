@@ -28,6 +28,7 @@
         android:id="@+id/rv_activity_teacher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="3dp"
         tools:listitem="@layout/item_class_card"
         app:layout_constraintTop_toBottomOf="@+id/app_bar_classroom"
         app:layout_constraintLeft_toLeftOf="parent"

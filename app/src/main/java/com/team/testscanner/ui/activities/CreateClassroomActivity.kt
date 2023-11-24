@@ -8,12 +8,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.team.testscanner.databinding.ActivityCreateClassroomBinding
 import com.team.testscanner.models.Classroom
-import com.team.testscanner.models.Quiz
 import com.team.testscanner.utility.MyUtility
 
 class CreateClassroomActivity : AppCompatActivity() {
     private lateinit var binding : ActivityCreateClassroomBinding
-    private lateinit var teacherEmail : String
+    private lateinit var userEmail : String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCreateClassroomBinding.inflate(layoutInflater)
@@ -22,12 +21,21 @@ class CreateClassroomActivity : AppCompatActivity() {
         binding.btnCreateClassroom.setOnClickListener {
             createClassroomFromFields()
         }
-
+        binding.btnJoinClassroom.setOnClickListener {
+            joinClassroomWithCode()
+        }
+    }
+    private fun joinClassroomWithCode(){
+        if(MyUtility.areEditTextsNotEmpty(binding.etClassroomCode)==false){
+            return
+        }
+        val classroomId : String = binding.etClassroomCode.text.toString()
+        addUserEnrollment(classroomId)
     }
 
     private fun getUserCredentials() {
         val auth : FirebaseAuth = FirebaseAuth.getInstance()
-        teacherEmail = auth.currentUser!!.email.toString()
+        userEmail = auth.currentUser!!.email.toString()
     }
 
     private fun createClassroomFromFields(){
@@ -36,7 +44,7 @@ class CreateClassroomActivity : AppCompatActivity() {
         }
         val newClassroom = Classroom()
         newClassroom.classroomName = binding.etClassName.text.toString()
-        newClassroom.classroomTeacherEmail = teacherEmail
+        newClassroom.classroomTeacherEmail = userEmail
         newClassroom.classroomTeacherName = binding.etClassTeacherName.text.toString()
         newClassroom.classroomSection = binding.etClassSection.text.toString()
         newClassroom.classroomQuizMap = mutableMapOf()
@@ -52,22 +60,22 @@ class CreateClassroomActivity : AppCompatActivity() {
             .set(classroom)
             .addOnSuccessListener {
                 Toast.makeText(this, "Classroom added successfully", Toast.LENGTH_SHORT).show()
-                addTeacherEnrollment(newClassroomId)
+                addUserEnrollment(newClassroomId)
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Error creating classroom", Toast.LENGTH_SHORT).show()
             }
     }
 
-    private fun addTeacherEnrollment(classroomId : String) {
+    private fun addUserEnrollment(classroomId : String) {
         var enrollmentCollection = FirebaseFirestore.getInstance().collection("Enrollments")
-        enrollmentCollection.whereEqualTo("email",teacherEmail)
+        enrollmentCollection.whereEqualTo("email",userEmail)
             .get()
             .addOnSuccessListener {querySnapshot ->
                 if (querySnapshot.isEmpty) {
                     // No document found, create a new one
                     val newDocument = hashMapOf(
-                        "email" to teacherEmail,
+                        "email" to userEmail,
                         "classrooms" to mutableListOf(classroomId)
                     )
 
@@ -102,7 +110,7 @@ class CreateClassroomActivity : AppCompatActivity() {
     }
 
     private fun callOnClassroomCreated() {
-        Toast.makeText(this,"Classroom Created Successfully",Toast.LENGTH_SHORT).show()
+        Toast.makeText(this,"Transaction Successful",Toast.LENGTH_SHORT).show()
         val intent = Intent(this,TeacherHomeActivity::class.java)
         startActivity(intent)
         finishAffinity()

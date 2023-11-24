@@ -111,7 +111,37 @@
         android:hint="Teacher Name"
         android:padding="16dp" />
 
-<!--    <EditText-->
+    <TextView
+        android:id="@+id/or_join"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="@string/or_login"
+        android:textSize="14sp"
+        android:layout_below="@id/et_class_teacherName"
+        android:gravity="center_horizontal"/>
+
+    <EditText
+        android:id="@+id/et_classroom_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_below="@id/or_join"
+        android:background="@color/colorEditTextBgColor"
+        android:hint="Classroom Code"
+        android:padding="16dp" />
+
+    <Button
+        android:id="@+id/btn_join_classroom"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_below="@id/et_classroom_code"
+        android:text="Join"
+        android:background="@color/colorEditTextBgColor"
+        />
+    <!--    <EditText-->
 <!--        android:id="@+id/et_class_subject"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_margin="20dp"-->
