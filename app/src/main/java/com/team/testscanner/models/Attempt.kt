@@ -10,8 +10,3 @@ data class Attempt(
     var selectedOptions : List<String> = mutableListOf(),
     var score : Int,
 ):Serializable
-
-data class ListAttempt(
-    var quizId : String,
-    var attemptList: Array<Attempt>
-)

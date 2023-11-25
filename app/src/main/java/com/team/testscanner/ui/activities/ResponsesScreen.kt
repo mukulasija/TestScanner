@@ -14,7 +14,6 @@ import com.team.testscanner.adapters.ResponsesAdapter
 import com.team.testscanner.databinding.ActivityClassroomBinding
 import com.team.testscanner.databinding.ActivityResponsesScreenBinding
 import com.team.testscanner.models.Attempt
-import com.team.testscanner.models.ListAttempt
 import com.team.testscanner.models.Quiz
 
 /// TODO when it comes back to this activity recycler view have to be fetched again to fetch latest scores
@@ -35,28 +34,6 @@ class ResponsesScreen : AppCompatActivity() {
             intent.putExtra("id",quizId)
             intent.putExtra("mode","update")
             startActivity(intent)
-        }
-    }
-    private fun function(){
-        val quizIdList = mutableListOf<ListAttempt>()
-        val quizCollection = FirebaseFirestore.getInstance().collection("quizzes")
-        quizIdList.clear()
-        quizCollection.whereEqualTo("quizId",quizId).addSnapshotListener { value, error ->
-            if(value==null || error!=null){
-//                    Toast.makeText(this,"Error fetching data",Toast.LENGTH_SHORT).show()
-            }
-//                Toast.makeText(this,"fetched data",Toast.LENGTH_SHORT).show()
-            if (value != null) {
-//                    Log.d("quiz",value.toObjects(Quiz::class.java).toString())
-            }
-            Toast.makeText(this,value!!.documents[0].toString(),Toast.LENGTH_SHORT).show()
-            quizIdList.addAll(value!!.toObjects(ListAttempt::class.java))
-            if(quizIdList.isEmpty()){
-                Toast.makeText(this,"empty",Toast.LENGTH_SHORT).show()
-                return@addSnapshotListener
-            }
-            val attempList = quizIdList[0].attemptList
-//            displayDataInRecyclerView(attempList)
         }
     }
 
