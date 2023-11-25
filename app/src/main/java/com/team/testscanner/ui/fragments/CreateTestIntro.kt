@@ -2,6 +2,7 @@ package com.team.testscanner.ui.fragments
 
 
 import android.Manifest.permission.*
+import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
@@ -47,6 +48,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.team.testscanner.models.HighStart
 import com.team.testscanner.models.MyMap
+import com.team.testscanner.ui.activities.CameraActivity
 import com.team.testscanner.ui.activities.MainActivity
 import com.team.testscanner.ui.activities.PreviewActivity
 import java.time.LocalTime
@@ -58,6 +60,7 @@ import java.util.Properties
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val REQUEST_CODE_CAMERA_PERMISSION = 1001
 
 /**
  * A simple [Fragment] subclass.
@@ -79,13 +82,14 @@ class CreateTestIntro(var classroomId : String,var studentId : String) : Fragmen
     private lateinit var loadingPB: ProgressBar
     private lateinit var submitButton : Button
     private lateinit var submitBtnHighAccuracy : Button
+    private lateinit var cameraButton : Button
 //    private lateinit var fragmentContext: Context
 //    override fun onAttach(context: Context) {
 //        super.onAttach(context)
 //        fragmentContext = context
 //    }
 
-    //TODO add camera functionality
+
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
             if (uris != null && uris.isNotEmpty()) {
@@ -107,6 +111,17 @@ class CreateTestIntro(var classroomId : String,var studentId : String) : Fragmen
         return imageUris.size
     }
 
+    // Add this in CreateTestIntro class
+    private val startCameraActivity =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val imageUri = result.data?.getStringExtra("imageUri")
+                imageUri?.let {
+                    // Handle the received image URI
+                    imageUris.add(Uri.parse(it))
+                }
+            }
+        }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
@@ -126,6 +141,13 @@ class CreateTestIntro(var classroomId : String,var studentId : String) : Fragmen
             openGallery()
             Log.d("PhotoPicker", "image count: ${imageUris.size}")
         }
+
+        cameraButton = view.findViewById(R.id.button_camera)
+        cameraButton.setOnClickListener {
+            val intent = Intent(context, CameraActivity::class.java)
+            startCameraActivity.launch(intent)
+        }
+
         outputDirectory = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
 
         if (checkSelfPermission(requireContext(),CAMERA)== PERMISSION_GRANTED) {
@@ -165,6 +187,7 @@ class CreateTestIntro(var classroomId : String,var studentId : String) : Fragmen
         }
         return view
     }
+
     fun getSelectedFormat(): String {
         val selectedId = radioGroup.checkedRadioButtonId
         return when (selectedId) {
@@ -421,6 +444,7 @@ class CreateTestIntro(var classroomId : String,var studentId : String) : Fragmen
             WRITE_EXTERNAL_STORAGE
         )
     }
+
     private fun bitmapToBase64(bitmap: Bitmap): String {
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
@@ -453,6 +477,7 @@ class CreateTestIntro(var classroomId : String,var studentId : String) : Fragmen
         }
 
     }
+
     private fun readApiKey(): String {
         val configFile = "config.properties"
         val properties = Properties()
@@ -527,11 +552,8 @@ class CreateTestIntro(var classroomId : String,var studentId : String) : Fragmen
         intent.putExtra("quizTitle",quiz.title)
         intent.putExtra("quizDuration",quiz.duration)
         intent.putExtra("previewMode",mode)
-        intent.putExtra("classroomId",classroomId)
-        intent.putExtra("studentId",studentId)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
-        activity?.finish()
     }
 
     private fun generate(context: Context){
@@ -697,6 +719,40 @@ class CreateTestIntro(var classroomId : String,var studentId : String) : Fragmen
         })
         return jsonRequest
     }
+
+    private fun openCamera() {
+        // Check if the camera permission is granted
+        if (checkSelfPermission(requireContext(), CAMERA) == PERMISSION_GRANTED) {
+            // Open camera here
+            takePhoto()
+        } else {
+            // Request camera permission
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(CAMERA),
+                REQUEST_CODE_CAMERA_PERMISSION
+            )
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_CAMERA_PERMISSION && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            openCamera()
+        } else {
+            // Handle permission denial
+            Toast.makeText(
+                requireContext(),
+                "Camera permission is required to take photos",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
 }
 
 fun MutableMap<String, Question>.addAllQuestions(questions: MutableList<Question>) {

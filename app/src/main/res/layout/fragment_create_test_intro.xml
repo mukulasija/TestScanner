@@ -1,177 +1,202 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.fragments.CreateTestIntro">
+    android:fillViewport="true"
+    >
 
-    <TextView
-        android:id="@+id/text_create_test"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="Create Test"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/enter_test_title"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="16dp"
-        app:errorEnabled="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_create_test"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_test_title"
+        android:layout_height="match_parent"
+        tools:context=".ui.fragments.CreateTestIntro">
+        <TextView
+            android:id="@+id/text_create_test"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:maxLines="1"
-            android:hint="Enter Test Title"
-            android:textColor="#757575" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_margin="10dp"
+            android:text="Create Test"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/choose_question_format_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="14dp"
-        android:text="Choose Questions Starting Format"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/enter_test_title" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/enter_test_title"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="10dp"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_create_test">
 
-    <RadioGroup
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/choose_question_format"
-        app:layout_constraintTop_toBottomOf="@id/choose_question_format_text"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="14dp">
-        <RadioButton
-            android:id="@+id/radio_numeric"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_test_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Test Title"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="#757575" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/choose_question_format_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="14dp"
+            android:text="Choose Questions Starting Format"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/enter_test_title" />
+
+        <RadioGroup
+            android:id="@+id/choose_question_format"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Numeric (1)"/>
-        <RadioButton
-            android:id="@+id/radio_Q"
+            android:layout_margin="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/choose_question_format_text">
+
+            <RadioButton
+                android:id="@+id/radio_numeric"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Numeric (1)" />
+
+            <RadioButton
+                android:id="@+id/radio_Q"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Question (Q)" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/text_select_way"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Question (Q)"/>
-    </RadioGroup>
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="20dp"
+            android:text="Image "
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/choose_question_format" />
 
-    <TextView
-        android:id="@+id/text_select_way"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="22dp"
-        android:text="Image "
-        android:textStyle="bold"
-        android:textSize="22sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/choose_question_format" />
+        <TextView
+            android:id="@+id/text_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="150dp"
+            android:text="Duration"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/choose_question_format" />
 
-    <TextView
-        android:id="@+id/text_duration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
-        android:text="Duration"
-        android:textSize="22sp"
-        android:layout_marginStart="22dp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/choose_question_format" />
+        <TimePicker
+            android:id="@+id/timer_picker"
+            android:layout_width="200dp"
+            android:layout_height="140dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:timePickerMode="spinner"
+            app:layout_constraintBottom_toBottomOf="@id/text_duration"
+            app:layout_constraintLeft_toLeftOf="@id/button_gallery"
+            app:layout_constraintRight_toRightOf="@id/button_gallery"
+            app:layout_constraintTop_toTopOf="@id/text_duration" />
 
-    <TimePicker
-        app:layout_constraintTop_toTopOf="@id/text_duration"
-        app:layout_constraintLeft_toLeftOf="@id/button_gallery"
-        app:layout_constraintRight_toRightOf="@id/button_gallery"
-        app:layout_constraintBottom_toBottomOf="@id/text_duration"
-        android:id="@+id/timer_picker"
-        android:layout_width="200dp"
-        android:layout_height="140dp"
-        android:timePickerMode="spinner"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_gravity="center_horizontal"/>
+        <Button
+            android:id="@+id/button_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="Camera"
+            app:cornerRadius="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/button_gallery"
+            app:layout_constraintEnd_toStartOf="@+id/button_gallery"
+            app:layout_constraintTop_toTopOf="@+id/button_gallery" />
 
-    <Button
-        android:id="@+id/button_gallery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="10dp"
-        android:text="Gallery"
-        app:cornerRadius="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.811"
-        app:layout_constraintStart_toStartOf="@id/text_select_way"
-        app:layout_constraintTop_toBottomOf="@id/choose_question_format" />
+        <Button
+            android:id="@+id/button_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="10dp"
+            android:text="Gallery"
+            app:cornerRadius="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.811"
+            app:layout_constraintStart_toStartOf="@id/text_select_way"
+            app:layout_constraintTop_toBottomOf="@id/choose_question_format" />
 
-    <ProgressBar
-        android:id="@+id/idPBCreateLoading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_centerHorizontal="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_duration"
-        android:layout_margin="20dp"
-        android:visibility="gone"
-        />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_selectedImages"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_camera" />
 
-    <Button
-        android:id="@+id/btn_submit_high_accuracy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:text="Create Test With Preview"
-        app:cornerRadius="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_duration"
-        tools:layout_editor_absoluteY="545dp" />
-    <Button
-        android:id="@+id/button_submit_test_intro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:text="Submit"
-        android:visibility="gone"
-        android:clickable="false"
-        app:cornerRadius="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_duration"
-        tools:layout_editor_absoluteY="545dp" />
+        <ProgressBar
+            android:id="@+id/idPBCreateLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_duration" />
 
+        <Button
+            android:id="@+id/btn_submit_high_accuracy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:text="HighAccuracy"
+            app:cornerRadius="8dp"
+            app:layout_constraintBottom_toTopOf="@id/button_submit_test_intro"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="545dp" />
 
-
-    <TextureView
-        android:id="@+id/viewFinder"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/button_submit_test_intro"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <Button
+            android:id="@+id/button_submit_test_intro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:text="Submit"
+            app:cornerRadius="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_duration"
+            tools:layout_editor_absoluteY="545dp" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextureView
+            android:id="@+id/viewFinder"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_submit_test_intro" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

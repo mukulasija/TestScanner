@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.team.testscanner">
+    package="com.team.testscanner" >
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -18,13 +18,17 @@
     </queries>
 
     <application
+        android:name=".TestScannerApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TestScanner">
+        android:theme="@style/Theme.TestScanner" >
+        <activity
+            android:name=".ui.activities.CameraActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.activities.ResponsesScreen"
             android:exported="false" />
@@ -63,14 +67,14 @@
             android:exported="false" />
         <activity
             android:name=".ui.question"
-            android:exported="false">
+            android:exported="false" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".ui.activities.LoginActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
