@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import com.team.testscanner.R
 import com.team.testscanner.adapters.ClassroomAdapter
 import com.team.testscanner.databinding.ActivityTeacherHomeBinding
 import com.team.testscanner.models.Classroom
@@ -57,8 +59,33 @@ class TeacherHomeActivity : AppCompatActivity() {
         }
 //        setUpFireStore()
         fetchDataFromFirestore()
+        binding.appBarClassroom.threeDotsButton.setOnClickListener{
+            showPopupMenu(it)
+        }
 //        addClassroomToFirestore(newclassroom,quizList)
     }
+    private fun showPopupMenu(view: View) {
+        val popupMenu = PopupMenu(this, view)
+        popupMenu.menuInflater.inflate(R.menu.menu_more_dotted, popupMenu.menu)
+
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_send_feedback -> {
+                    openFeedbackActivity()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        popupMenu.show()
+    }
+
+    private fun openFeedbackActivity() {
+        val intent = Intent(this,FeedbackActivity::class.java)
+        startActivity(intent)
+    }
+
     private fun setUpRecyclerView(){
         val layoutManager= LinearLayoutManager(this)
         val recyclerView: RecyclerView = binding.rvActivityTeacher

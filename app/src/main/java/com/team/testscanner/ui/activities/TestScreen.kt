@@ -11,6 +11,7 @@ import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -40,7 +41,9 @@ class TestScreen : AppCompatActivity() {
     lateinit var timer : CountDownTimer
     private lateinit var mode : String
     lateinit var tvqNo : TextView
+    private var appSwitchCount = 0
     private var score = 0
+
     private lateinit var loadingPB: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -199,6 +202,51 @@ class TestScreen : AppCompatActivity() {
 //            startActivity(intent)
         }
     }
+
+    override fun onPause() {
+        super.onPause()
+        // Increment the counter when the user leaves the app
+        appSwitchCount++
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Check if the user has switched out of the app more than once
+        if (appSwitchCount > 1) {
+            // Show a dialog prompting the user about leaving the app multiple times
+            showAlertDialog()
+        }
+        // Reset the counter when the user returns to the app
+    }
+
+    private fun showAlertDialog() {
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setTitle("Alert")
+        alertDialogBuilder.setMessage("You have switched out of the app multiple times.")
+        alertDialogBuilder.setPositiveButton("Submit") { _, _ ->
+            // Perform the action to submit the test (e.g., click the submit button)
+            // Replace the following line with your submit button click action
+            clickSubmitButton()
+        }
+        alertDialogBuilder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+        if(appSwitchCount>2){
+            Toast.makeText(this,"Auto Submitted due to tab Switching",Toast.LENGTH_SHORT).show()
+            clickSubmitButton()
+        }
+    }
+
+    // Replace this function with your actual logic to click the submit button
+    private fun clickSubmitButton() {
+        btnSubmit.callOnClick()
+        // Perform the action to click the submit button
+        // For example:
+        // submitButton.performClick()
+    }
+
 
     override fun onBackPressed() {
         super.onBackPressed()
