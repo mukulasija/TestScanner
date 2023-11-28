@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:minHeight="?listPreferredItemHeight"
+        android:orientation="horizontal"
+        tools:ignore="Overdraw, RTLHardcoded">
+
+        <androidx.constraintlayout.utils.widget.ImageFilterButton
+            android:id="@+id/btnClassroomMenu"
+            android:background="@drawable/ic_baseline_menu"
+            android:backgroundTint="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="14dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvTestTeacherName"
+            app:layout_constraintBottom_toBottomOf="@id/tvTestTeacherName"/>
+
+        <androidx.constraintlayout.utils.widget.ImageFilterButton
+            android:id="@+id/icclassroomRvTest"
+            android:background="@drawable/ic_laptop_chromebook"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+        <TextView
+            android:id="@+id/tvTestTeacherName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_marginLeft="10dp"
+            android:text="Teacher Name"
+            app:layout_constraintBottom_toBottomOf="@id/icclassroomRvTest"
+            app:layout_constraintStart_toEndOf="@id/icclassroomRvTest"
+            app:layout_constraintTop_toTopOf="@id/icclassroomRvTest" />
+
+        <TextView
+            android:id="@+id/tvTeacherName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toBottomOf="@id/icclassroomRvTest"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/black"
+            android:text="Pardeep Soni" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

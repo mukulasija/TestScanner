@@ -3,6 +3,7 @@ package com.team.testscanner.ui.activities
 //import android.support.design.widget.FloatingActionButton
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
@@ -15,6 +16,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.team.testscanner.R
 import com.team.testscanner.ui.fragments.AnalyticsFragment
+import com.team.testscanner.ui.fragments.CreateClassroomTest
 import com.team.testscanner.ui.fragments.CreateTestIntro
 import com.team.testscanner.ui.fragments.HomeFragment
 import com.team.testscanner.ui.fragments.ResultsFragment
@@ -26,6 +28,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomAppBar: BottomAppBar
     private lateinit var auth: FirebaseAuth
     private var isShowBottomNav = true
+    private lateinit var studentId : String
+    private lateinit var classroomId : String
 
 
  //   lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -36,12 +40,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 //        openActivity()   //  comment down just for testing activity
       //  navView = findViewById(R.id.bottomNavigationView)
+        val fragment_tag = intent.getStringExtra("fragment_tag")
+        classroomId = intent.getStringExtra("classroomId").toString()
+        studentId = intent.getStringExtra("studentId").toString()
+        val fabButton:FloatingActionButton=findViewById(R.id.fab)
         val homeFragment = HomeFragment()
         val homeTransaction = supportFragmentManager.beginTransaction()
+        val bottomNavigationView:BottomNavigationView = findViewById(R.id.bottomNavigationView)
         homeTransaction.replace(R.id.my_fragment, homeFragment)
         homeTransaction.commit()
-        val fabButton:FloatingActionButton=findViewById(R.id.fab)
-        val bottomNavigationView:BottomNavigationView = findViewById(R.id.bottomNavigationView)
 
         // Attach a listener to the bottom navigation view
         bottomNavigationView.setOnItemSelectedListener { menuItem ->
@@ -80,7 +87,7 @@ class MainActivity : AppCompatActivity() {
            // openActivity()
             //remove this function call just for testing test page
             // Create a new instance of the fragment
-            val fragment = CreateTestIntro()
+            val fragment = CreateTestIntro(classroomId,studentId)
             val transaction = supportFragmentManager.beginTransaction()
             transaction.replace(R.id.my_fragment, fragment)
             transaction.addToBackStack(null)

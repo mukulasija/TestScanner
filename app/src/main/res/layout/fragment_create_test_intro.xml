@@ -142,11 +142,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:text="HighAccuracy"
+        android:text="Create Test With Preview"
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/button_submit_test_intro"
+        app:layout_constraintTop_toBottomOf="@id/text_duration"
         tools:layout_editor_absoluteY="545dp" />
     <Button
         android:id="@+id/button_submit_test_intro"
@@ -154,6 +154,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         android:text="Submit"
+        android:visibility="gone"
+        android:clickable="false"
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

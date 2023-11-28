@@ -9,4 +9,9 @@
     <dimen name="option_boarder_height">1dp</dimen>
     <dimen name="question_bar_text_size">15sp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="card_margin">10dp</dimen>
+    <dimen name="favicon_width">70dp</dimen>
+    <dimen name="activity_horizontal_margin">10dp</dimen>
+    <dimen name="favicon_margin_right">20dp</dimen>
+    <dimen name="item_library_margin_top">10dp</dimen>
 </resources>

@@ -1,5 +1,8 @@
 package com.team.testscanner.models
 
+import android.content.Context
+import android.widget.Toast
+import com.google.firebase.firestore.FirebaseFirestore
 import java.time.Duration
 
 data class Quiz (
@@ -13,6 +16,14 @@ data class Quiz (
     var duration : Long = 3600,
     var imMap : MutableMap<String,String> = mutableMapOf()
 ) {
+    fun addQuiztoClassroom(context : Context, classroomId : String, db : FirebaseFirestore){
+        val quizCollecetionRef = db.collection("Classroom/$classroomId/Quizzes")
+        quizCollecetionRef.add(this).addOnSuccessListener {
+            val quizId = it.id
+        }.addOnFailureListener {
+            Toast.makeText(context,"Error Adding Quiz Please try again later",Toast.LENGTH_SHORT).show()
+        }
+    }
     constructor(id: String, title: String, questions: MutableMap<String, Question>) : this(
         id,
         title,

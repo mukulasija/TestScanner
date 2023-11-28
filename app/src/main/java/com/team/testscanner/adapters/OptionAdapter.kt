@@ -37,6 +37,9 @@ class OptionAdapter(val context: Context, val op: OptionSelector, val question: 
 //                holder.itemView.setBackgroundResource(R.drawable.option_item_bg)
             }
             if(options[position]==question.answer){
+                if(question.userAnswer=="neg"){
+                    holder.optionView.text = holder.optionView.text.toString() + "       (Not attempted)"
+                }
                     holder.itemView.setBackgroundResource(R.drawable.option_item_green_bg)
             }
             else{
